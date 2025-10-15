@@ -742,6 +742,55 @@ var SnailBait = function () {
          }
       }
    };
+
+   this.fallBehavior = {         
+      execute: function (sprite, now, fps, context, lastAnimationFrameTime) {
+         if ( ! sprite.falling) {
+			 sprite.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
+            if (! snailBait.platformUnderneath(sprite)) {
+               sprite.runAnimationRate = 0;
+            }
+         }
+      }
+   };
+
+   this.collideBehavior = {
+      isCandidateForCollision: function (sprite, otherSprite) {
+         var s, o;
+         
+         s = sprite.calculateCollisionRectangle(),
+         o = otherSprite.calculateCollisionRectangle();
+         
+         return o.left < s.right &&
+                sprite !== otherSprite;
+      },
+
+      didCollide: function (sprite, otherSprite, context) {
+         var o = otherSprite.calculateCollisionRectangle(),
+             r = sprite.calculateCollisionRectangle();
+
+         // Determine if either of the runner's four corners or its
+         // center lie within the other sprite's bounding box.
+
+         context.beginPath();
+         context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
+
+         return context.isPointInPath(r.left,  r.top)       ||
+                context.isPointInPath(r.right, r.top)       ||
+
+                context.isPointInPath(r.centerX, r.centerY) ||
+
+                context.isPointInPath(r.left,  r.bottom)    ||
+                context.isPointInPath(r.right, r.bottom);
+      },
+
+      processCollision: function (sprite, otherSprite) {
+      },
+
+      execute: function (sprite, now, fps, context, 
+                         lastAnimationFrameTime) {
+      }      
+   };
 };
 
 SnailBait.prototype = {
@@ -963,7 +1012,7 @@ SnailBait.prototype = {
        this.runner = new Sprite('runner',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.runnerCellsRight),
-                        [ this.runBehavior ]); 
+                        [ this.runBehavior, this.fallBehavior ]); 
 
        this.runner.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
 
@@ -971,6 +1020,13 @@ SnailBait.prototype = {
        this.runner.left = RUNNER_LEFT;
        this.runner.top = this.calculatePlatformTop(this.runner.track) -
                             RUNNER_HEIGHT;
+
+       this.runner.collisionMargin = {
+           left: 20,
+           top: 15, 
+           right: 15,
+           bottom: 20,
+       };
 
        this.sprites.push(this.runner);
    },
@@ -1212,6 +1268,30 @@ SnailBait.prototype = {
       if      (track === 1) { return this.TRACK_1_BASELINE; } // 323 pixels
       else if (track === 2) { return this.TRACK_2_BASELINE; } // 223 pixels
       else if (track === 3) { return this.TRACK_3_BASELINE; } // 123 pixels
+   },
+
+   platformUnderneath: function (sprite, track) {
+      var platform,
+          platformUnderneath,
+          sr = sprite.calculateCollisionRectangle(), // sprite rect
+          pr; // platform rectangle
+
+      if (track === undefined) {
+         track = sprite.track; // Look on sprite track only
+      }
+
+      for (var i=0; i < snailBait.platforms.length; ++i) {
+         platform = snailBait.platforms[i];
+         pr = platform.calculateCollisionRectangle();
+
+         if (track === platform.track) {
+            if (sr.right > pr.left  && sr.left < pr.right) {
+               platformUnderneath = platform;
+               break;
+            }
+         }
+      }
+      return platformUnderneath;
    },
 
    turnLeft: function () {
