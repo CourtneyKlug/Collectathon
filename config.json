@@ -1,0 +1,39 @@
+
+{
+    "dinosaur" : {
+        "paleGreenCollected":false,
+        "frogCollected":false,
+        "blueCollected":false,
+        "yellowCollected":false,
+        "spottedGreenCollected":false,
+        "gearOneCollected_Dino":false,
+        "gearTwoCollected_Dino":false,
+        "gearThreeCollected_Dino":false,
+        "gearFourCollected_Dino":false,
+        "gearFiveCollected_Dino":false,
+        "gearSixCollected_Dino":false,
+        "gearSevenCollected_Dino":false,
+        "gearEightCollected_Dino":false,
+        "gearNineCollected_Dino":false,
+        "gearTenCollected_Dino":false,
+        "leafInHand":false
+    },
+    
+    "roman":{
+        "bananaCollected":false,
+        "grapeCollected":false,
+        "orangeCollected":false,
+        "pearCollected":false,
+        "watermelonCollected":false,
+        "gearOneCollected_Roman":false,
+        "gearTwoCollected_Roman":false,
+        "gearThreeCollected_Roman":false,
+        "gearFourCollected_Roman":false,
+        "gearFiveCollected_Roman":false,
+        "gearSixCollected_Roman":false,
+        "gearSevenCollected_Roman":false,
+        "gearEightCollected_Roman":false,
+        "gearNineCollected_Roman":false,
+        "gearTenCollected_Roman":false
+    }
+}
