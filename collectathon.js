@@ -14,8 +14,7 @@ var SnailBait = function () {
    this.OPAQUE = 1.0,
 
    this.BACKGROUND_VELOCITY = 42,
-   // this.RUN_ANIMATION_RATE = 30,
-   this.RUN_ANIMATION_RATE = 15,
+   this.RUN_ANIMATION_RATE = 10,
 
    this.PLATFORM_HEIGHT = 8,  
    this.PLATFORM_STROKE_WIDTH = 2,
