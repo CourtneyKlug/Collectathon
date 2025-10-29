@@ -106,6 +106,7 @@ var SnailBait = function () {
    
    this.backgroundOffset = this.STARTING_BACKGROUND_OFFSET,
    this.spriteOffset = this.STARTING_SPRITE_OFFSET;
+   this.jumpBehavior = new JumpBehavior();
    
    //this.platformOffset = this.STARTING_PLATFORM_OFFSET,
 
@@ -676,6 +677,7 @@ var SnailBait = function () {
       }
    };
 
+    
    // ------------------------Sprite behaviors-------------------------
 
    // Pacing on platforms...............................................
@@ -701,7 +703,9 @@ var SnailBait = function () {
             this.lastAdvanceTime = now;
          }
       }      
-   };
+    };
+
+
 
    // Pacing on platforms...............................................
 
@@ -1050,7 +1054,7 @@ SnailBait.prototype = {
        this.runner = new Sprite('runner',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.izzyCellsRight),
-                        [ this.runBehavior, this.fallBehavior ]); 
+           [this.runBehavior, this.fallBehavior, this.jumpBehavior ]); 
 
        this.runner.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
 
@@ -1414,17 +1418,23 @@ SnailBait.prototype = {
    },
 
    togglePaused: function () {
-      var now = +new Date();
+        var now = +new Date();
 
-      this.paused = !this.paused;
+        this.paused = !this.paused;
 
-      if (this.paused) {
-         this.pauseStartTime = now;
-      }
-      else {
-         this.lastAnimationFrameTime += (now - this.pauseStartTime);
-      }
-   },
+        if (this.paused) {
+            this.pauseStartTime = now;
+            if (this.jumpBehavior) {
+                this.jumpBehavior.pause();
+            }
+        }
+        else {
+            this.lastAnimationFrameTime += (now - this.pauseStartTime);
+            if (this.jumpBehavior) {
+                this.jumpBehavior.unpause();
+            }
+        }
+    },
 
    // ------------------------- INITIALIZATION ----------------------------
 
@@ -1538,6 +1548,9 @@ window.onkeydown = function (e) {
    }
    else if (key === 80) { // 'p'
       snailBait.togglePaused();
+    }
+   else if (key === 74 || key === 32) { // 'j' or spacebar for jump
+       snailBait.jumpBehavior.startJump(snailBait.runner);
    }
 };
 
