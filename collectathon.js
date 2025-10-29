@@ -468,13 +468,13 @@ var SnailBait = function () {
 
    // Platforms.........................................................
 
-   this.platformData = [
+this.platformData = [
       // Screen 1.......................................................
       {
          left:      10,
          width:     230,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(150,190,255)',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     1,
          pulsate:   false,
@@ -483,7 +483,7 @@ var SnailBait = function () {
       {  left:      250,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(150,190,255)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
          pulsate:   false,
@@ -492,7 +492,7 @@ var SnailBait = function () {
       {  left:      400,
          width:     125,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(250,0,0)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     3,
          pulsate:   false
@@ -501,7 +501,7 @@ var SnailBait = function () {
       {  left:      633,
          width:     300,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(80,140,230)',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     1,
          pulsate:   false,
@@ -512,7 +512,7 @@ var SnailBait = function () {
       {  left:      810,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(200,200,0)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
          pulsate:   false
@@ -521,7 +521,7 @@ var SnailBait = function () {
       {  left:      1025,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(80,140,230)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
          pulsate:   false
@@ -530,7 +530,7 @@ var SnailBait = function () {
       {  left:      1200,
          width:     125,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'aqua',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     3,
          pulsate:   false
@@ -539,7 +539,7 @@ var SnailBait = function () {
       {  left:      1400,
          width:     180,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(80,140,230)',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     1,
          pulsate:   false,
@@ -550,7 +550,7 @@ var SnailBait = function () {
       {  left:      1625,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(200,200,0)',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     2,
          pulsate:   false
@@ -559,7 +559,7 @@ var SnailBait = function () {
       {  left:      1800,
          width:     250,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(80,140,230)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     1,
          pulsate:   false
@@ -568,7 +568,7 @@ var SnailBait = function () {
       {  left:      2000,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'rgb(200,200,80)',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
          pulsate:   false
@@ -577,7 +577,7 @@ var SnailBait = function () {
       {  left:      2100,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'aqua',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     3,
       },
@@ -588,7 +588,7 @@ var SnailBait = function () {
       {  left:      2269,
          width:     200,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'gold',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     1,
       },
@@ -596,7 +596,7 @@ var SnailBait = function () {
       {  left:      2500,
          width:     200,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: '#2b950a',
+         fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
          snail:     true
@@ -660,20 +660,29 @@ var SnailBait = function () {
    this.platformArtist = {
       draw: function (sprite, context) {
          var PLATFORM_STROKE_WIDTH = 1.0,
-             PLATFORM_STROKE_STYLE = 'black',
-             top;
-         
-         top = snailBait.calculatePlatformTop(sprite.track);
+            PLATFORM_STROKE_STYLE = 'black',
+            top = snailBait.calculatePlatformTop(sprite.track);
 
          context.lineWidth = PLATFORM_STROKE_WIDTH;
          context.strokeStyle = PLATFORM_STROKE_STYLE;
-         context.fillStyle = sprite.fillStyle;
 
-         context.strokeRect(sprite.left, top, 
-                            sprite.width, sprite.height);
+         // Check if fillStyle is 'image' and image is loaded
+         if (sprite.fillStyle === 'image' && snailBait.platformImageLoaded) {
+            var pattern = context.createPattern(snailBait.platformImage, 'repeat');
+            context.fillStyle = pattern;
+         } 
+         
+         else if (sprite.fillStyle === 'image2' && snailBait.platformImageLoaded) {
+            var pattern = context.createPattern(snailBait.platformImage2, 'repeat');
+            context.fillStyle = pattern;
+         }
+         
+         else {
+            context.fillStyle = sprite.fillStyle;
+         }
 
-         context.fillRect  (sprite.left, top, 
-                            sprite.width, sprite.height);
+         context.strokeRect(sprite.left, top, sprite.width, sprite.height);
+         context.fillRect(sprite.left, top, sprite.width, sprite.height);
       }
    };
 
@@ -1467,6 +1476,20 @@ SnailBait.prototype = {
 
       this.runnerAnimatedGIFElement.onload = function () {
          snailBait.loadingAnimationLoaded();
+      };
+
+      this.platformImage = new Image();
+      this.platformImage.src = 'images/leafPlatformcropped.png';
+
+      this.platformImage.onload = function () {
+         snailBait.platformImageLoaded = true;
+      };
+
+      this.platformImage2 = new Image();
+      this.platformImage2.src = 'images/branchPlatformcropped.png';
+
+      this.platformImage2.onload = function () {
+         snailBait.platformImage2Loaded = true;
       };
    },
 
