@@ -147,6 +147,12 @@ var SnailBait = function () {
    this.SNAIL_CELLS_HEIGHT = 34;
    this.SNAIL_CELLS_WIDTH  = 64;
 
+   this.MUSHROOM_CELLS_HEIGHT = 40;
+   this.MUSHROOM_CELLS_WIDTH = 50;
+
+   this.BUSH_CELLS_HEIGHT = 50;
+   this.BUSH_CELLS_WIDTH = 50;
+
    this.batCells = [
       { left: 3,   top: 0, width: 36, height: this.BAT_CELLS_HEIGHT },
       { left: 41,  top: 0, width: 46, height: this.BAT_CELLS_HEIGHT },
@@ -373,6 +379,16 @@ var SnailBait = function () {
       { left: 2,   top: 466, width: this.SNAIL_CELLS_WIDTH, 
                              height: this.SNAIL_CELLS_HEIGHT },
    ]; 
+
+   this.mushroomCells = [
+      { left: 162, top: 3, width: this.MUSHROOM_CELLS_WIDTH,
+                             height: this.MUSHROOM_CELLS_HEIGHT }
+   ];
+
+   this.bushCells = [
+      { left: 220, top: 9, width: this.BUSH_CELLS_WIDTH,
+                             height: this.BUSH_CELLS_HEIGHT }
+   ];
 
    // Sprite data.......................................................
 
@@ -630,6 +646,28 @@ this.platformData = [
          top: this.TRACK_2_BASELINE - this.RUBY_CELLS_HEIGHT },
    ];
 
+   this.mushroomData = [
+      { left: 800, 
+          top: this.TRACK_2_BASELINE - -1.5*this.MUSHROOM_CELLS_HEIGHT },
+      
+      { left: 10, 
+          top: this.TRACK_1_BASELINE - 1.0*this.MUSHROOM_CELLS_HEIGHT },
+
+      { left: 2125, 
+         top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
+   ];
+
+   this.bushData = [
+      { left: 300, 
+          top: this.TRACK_1_BASELINE - 2.7*this.BUSH_CELLS_HEIGHT },
+
+      { left: 400, 
+          top: this.TRACK_1_BASELINE - 4.7*this.BUSH_CELLS_HEIGHT },
+
+      { left: 1240, 
+          top: this.TRACK_2_BASELINE - 2.7*this.BUSH_CELLS_HEIGHT },
+   ];
+
    this.smokingHoleData = [
       { left: 248,  top: this.TRACK_2_BASELINE - 22 },
       { left: 688,  top: this.TRACK_3_BASELINE + 5 },
@@ -650,6 +688,8 @@ this.platformData = [
    this.rubies       = [];
    this.sapphires    = [];
    this.snails       = [];
+   this.mushrooms    = [];
+   this.bushes       = [];
 
    this.sprites = []; // For convenience, contains all of the sprites  
                       // from the preceding arrays
@@ -855,6 +895,8 @@ SnailBait.prototype = {
       this.createRubySprites();
       this.createSapphireSprites();
       // this.createSnailSprites();
+      this.createMushroomSprites();
+      this.createBushSprites();
 
       this.initializeSprites();
 
@@ -896,6 +938,14 @@ SnailBait.prototype = {
          this.sprites.push(this.snails[i]);
       }
 
+      for (var i=0; i < this.mushrooms.length; ++i) {
+         this.sprites.push(this.mushrooms[i]);
+      }
+
+      for (var i=0; i < this.bushes.length; ++i) {
+         this.sprites.push(this.bushes[i]);
+      }
+
       this.sprites.push(this.runner);
    },
 
@@ -924,6 +974,8 @@ SnailBait.prototype = {
       this.positionSprites(this.rubies,    this.rubyData);
       this.positionSprites(this.sapphires, this.sapphireData);
       this.positionSprites(this.snails,    this.snailData);
+      this.positionSprites(this.mushrooms,    this.mushroomData);
+      this.positionSprites(this.bushes,    this.bushData);
 
       this.armSnails();
    },
@@ -942,6 +994,36 @@ SnailBait.prototype = {
          bat.height = this.BAT_CELLS_HEIGHT;
 
          this.bats.push(bat);
+      }
+   },
+
+   createMushroomSprites: function () {
+      var mushroom;
+
+      for (var i = 0; i < this.mushroomData.length; ++i) {
+         mushroom = new Sprite('mushroom',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.mushroomCells));
+
+         mushroom.width = this.MUSHROOM_CELLS_WIDTH; 
+         mushroom.height = this.MUSHROOM_CELLS_HEIGHT;
+
+         this.mushrooms.push(mushroom);
+      }
+   },
+
+   createBushSprites: function () {
+      var bush;
+
+      for (var i = 0; i < this.bushData.length; ++i) {
+         bush = new Sprite('bush',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.bushCells));
+
+         bush.width = this.BUSH_CELLS_WIDTH; 
+         bush.height = this.BUSH_CELLS_HEIGHT;
+
+         this.bushes.push(bush);
       }
    },
 
@@ -1544,8 +1626,8 @@ SnailBait.prototype = {
       INITIAL_TOAST_DURATION = 3000;
 
       setTimeout( function () {
-         snailBait.revealToast('Collide with coins and jewels. ' +
-           'Avoid bats and bees.', 
+         snailBait.revealToast('Collide with gear pieces and bonus collectables. ' +
+           'Avoid bottomless pits.', 
            INITIAL_TOAST_DURATION);
       }, INITIAL_TOAST_DELAY);
    },
