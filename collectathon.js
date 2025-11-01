@@ -153,6 +153,17 @@ var SnailBait = function () {
    this.BUSH_CELLS_HEIGHT = 50;
    this.BUSH_CELLS_WIDTH = 50;
 
+   this.TREE_CELLS_HEIGHT = 80;
+   this.TREE_CELLS_WIDTH = 50;
+
+   this.EGG4_CELLS_HEIGHT = 50;
+   this.EGG4_CELLS_WIDTH = 40;
+
+   this.EGG5_CELLS_HEIGHT = 50;
+   this.EGG5_CELLS_WIDTH = 40;
+
+   
+
    this.batCells = [
       { left: 3,   top: 0, width: 36, height: this.BAT_CELLS_HEIGHT },
       { left: 41,  top: 0, width: 46, height: this.BAT_CELLS_HEIGHT },
@@ -388,6 +399,21 @@ var SnailBait = function () {
    this.bushCells = [
       { left: 220, top: 9, width: this.BUSH_CELLS_WIDTH,
                              height: this.BUSH_CELLS_HEIGHT }
+   ];
+
+   this.treeCells = [
+      { left: 288, top: 5, width: this.TREE_CELLS_WIDTH,
+                             height: this.TREE_CELLS_HEIGHT }
+   ];
+
+   this.egg4Cells = [
+      { left: 341,   top: 10, width: this.EGG4_CELLS_WIDTH,
+                             height: this.EGG4_CELLS_HEIGHT }
+   ];
+
+   this.egg5Cells = [
+      { left: 388,   top: 9, width: this.EGG5_CELLS_WIDTH,
+                             height: this.EGG5_CELLS_HEIGHT }
    ];
 
    // Sprite data.......................................................
@@ -668,6 +694,22 @@ this.platformData = [
           top: this.TRACK_2_BASELINE - 2.7*this.BUSH_CELLS_HEIGHT },
    ];
 
+   this.treeData = [
+      { left: 107, 
+          top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+   ];
+
+   this.egg4Data = [
+      { left: 1260,
+         top: this.TRACK_2_BASELINE - 2.8*this.EGG4_CELLS_HEIGHT },
+   ];
+
+
+   this.egg5Data = [
+      { left: 2600,
+         top: this.TRACK_3_BASELINE - -1.0*this.EGG5_CELLS_HEIGHT },
+   ];
+
    this.smokingHoleData = [
       { left: 248,  top: this.TRACK_2_BASELINE - 22 },
       { left: 688,  top: this.TRACK_3_BASELINE + 5 },
@@ -690,6 +732,9 @@ this.platformData = [
    this.snails       = [];
    this.mushrooms    = [];
    this.bushes       = [];
+   this.trees        = [];
+   this.egg4s        = [];
+   this.egg5s        = [];
 
    this.sprites = []; // For convenience, contains all of the sprites  
                       // from the preceding arrays
@@ -897,6 +942,9 @@ SnailBait.prototype = {
       // this.createSnailSprites();
       this.createMushroomSprites();
       this.createBushSprites();
+      this.createTreeSprites();
+      this.createEgg4Sprite();
+      this.createEgg5Sprite();
 
       this.initializeSprites();
 
@@ -946,6 +994,19 @@ SnailBait.prototype = {
          this.sprites.push(this.bushes[i]);
       }
 
+      for (var i=0; i < this.trees.length; ++i) {
+         this.sprites.push(this.trees[i]);
+      }
+
+      
+      for (var i=0; i < this.egg4s.length; ++i) {
+         this.sprites.push(this.egg4s[i]);
+      }
+
+      for (var i=0; i < this.egg5s.length; ++i) {
+         this.sprites.push(this.egg5s[i]);
+      }
+
       this.sprites.push(this.runner);
    },
 
@@ -976,6 +1037,9 @@ SnailBait.prototype = {
       this.positionSprites(this.snails,    this.snailData);
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
+      this.positionSprites(this.trees, this.treeData);
+      this.positionSprites(this.egg4s, this.egg4Data);
+      this.positionSprites(this.egg5s, this.egg5Data);
 
       this.armSnails();
    },
@@ -1024,6 +1088,51 @@ SnailBait.prototype = {
          bush.height = this.BUSH_CELLS_HEIGHT;
 
          this.bushes.push(bush);
+      }
+   },
+
+   createTreeSprites: function () {
+      var tree;
+
+      for (var i = 0; i < this.treeData.length; ++i) {
+         tree = new Sprite('tree',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.treeCells));
+
+         tree.width = this.TREE_CELLS_WIDTH; 
+         tree.height = this.TREE_CELLS_HEIGHT;
+
+         this.trees.push(tree);
+      }
+   },
+
+   createEgg4Sprite: function () {
+      var egg4;
+
+      for (var i = 0; i < this.egg4Data.length; ++i) {
+         egg4 = new Sprite('egg4',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.egg4Cells));
+
+         egg4.width = this.EGG4_CELLS_WIDTH; 
+         egg4.height = this.EGG4_CELLS_HEIGHT;
+
+         this.egg4s.push(egg4);
+      }
+   },
+
+   createEgg5Sprite: function () {
+      var egg5;
+
+      for (var i = 0; i < this.egg5Data.length; ++i) {
+         egg5 = new Sprite('egg5',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.egg5Cells));
+
+         egg5.width = this.EGG5_CELLS_WIDTH; 
+         egg5.height = this.EGG5_CELLS_HEIGHT;
+
+         this.egg5s.push(egg5);
       }
    },
 
