@@ -27,8 +27,7 @@ var SnailBait = function () {
 
    // Velocities........................................................
 
-   this.BUTTON_PACE_VELOCITY = 80; //May be used to make items bobble
-   this.SNAIL_PACE_VELOCITY = 50;
+   this.GEAR_PACE_VELOCITY = 80; //Makes gears bobble. Doesn't work yet -Abby
 
    // Loading screen....................................................
 
@@ -116,25 +115,11 @@ var SnailBait = function () {
    this.IZZY_CELLS_WIDTH = 55;
    this.IZZY_CELLS_HEIGHT = 40;
 
-   this.BUTTON_CELLS_HEIGHT  = 20;
-   this.BUTTON_CELLS_WIDTH   = 31;
-
    this.COIN_CELLS_HEIGHT = 30;
    this.COIN_CELLS_WIDTH  = 23;
-   
-   this.EXPLOSION_CELLS_HEIGHT = 62;
 
    this.GEAR_CELLS_HEIGHT = 30; //Height of the gear sprite
-   this.RUBY_CELLS_WIDTH = 29; //Width of the gear sprite
-
-   this.SAPPHIRE_CELLS_HEIGHT = 30;
-   this.SAPPHIRE_CELLS_WIDTH  = 39;
-
-   this.SNAIL_BOMB_CELLS_HEIGHT = 20;
-   this.SNAIL_BOMB_CELLS_WIDTH  = 20;
-
-   this.SNAIL_CELLS_HEIGHT = 34;
-   this.SNAIL_CELLS_WIDTH  = 64;
+   this.GEAR_CELLS_WIDTH = 29; //Width of the gear sprite
 
    this.MUSHROOM_CELLS_HEIGHT = 40;
    this.MUSHROOM_CELLS_WIDTH = 50;
@@ -153,34 +138,18 @@ var SnailBait = function () {
 
 
    // Sprite sheet cells................................................
-   this.blueCoinCells = [
-       { left: 125, top: 2, width: this.COIN_CELLS_WIDTH, 
-                            height: this.COIN_CELLS_HEIGHT }
-   ];
+    this.blueCoinCells = [
+        { left: 125, top: 2, width: this.COIN_CELLS_WIDTH, 
+                             height: this.COIN_CELLS_HEIGHT }
+    ];
 
-   this.blueButtonCells = [
-      { left: 10,   top: 192, width: this.BUTTON_CELLS_WIDTH,
-                            height: this.BUTTON_CELLS_HEIGHT },
-
-      { left: 53,  top: 192, width: this.BUTTON_CELLS_WIDTH, 
-                            height: this.BUTTON_CELLS_HEIGHT }
-   ];
-
-   this.goldCoinCells = [
-      { left: 104, top: 3, width: this.COIN_CELLS_WIDTH, 
-                            height: this.COIN_CELLS_HEIGHT }
-   ];
-
-   this.goldButtonCells = [
-      { left: 90,   top: 190, width: this.BUTTON_CELLS_WIDTH,
-                              height: this.BUTTON_CELLS_HEIGHT },
-
-      { left: 132,  top: 190, width: this.BUTTON_CELLS_WIDTH,
-                              height: this.BUTTON_CELLS_HEIGHT }
-   ];
+    this.goldCoinCells = [
+       { left: 104, top: 3, width: this.COIN_CELLS_WIDTH, 
+                             height: this.COIN_CELLS_HEIGHT }
+    ];
 
    this.gearCells = [ //This is the location of the gear sprite on the sprite sheet
-      { left: 0,   top: 0, width: this.RUBY_CELLS_WIDTH,
+      { left: 0,   top: 0, width: this.GEAR_CELLS_WIDTH,
                              height: this.GEAR_CELLS_HEIGHT }
    ];
 
@@ -218,27 +187,6 @@ var SnailBait = function () {
          width: 29, height: this.IZZY_CELLS_HEIGHT },
    ],
 
-   this.rubyCells = [
-      { left: 65,   top: 4, width: this.SAPPHIRE_CELLS_WIDTH, //Why is this swapped with Ruby data? Are we using the Ruby data? Can they be condensed into just Gear data? -Abby
-                             height: this.SAPPHIRE_CELLS_HEIGHT }
-   ];
-
-   this.snailBombCells = [
-      { left: 40, top: 512, width: 30, height: 20 },
-      { left: 2, top: 512, width: 30, height: 20 }
-   ];
-
-   this.snailCells = [
-      { left: 142, top: 466, width: this.SNAIL_CELLS_WIDTH,
-                             height: this.SNAIL_CELLS_HEIGHT },
-
-      { left: 75,  top: 466, width: this.SNAIL_CELLS_WIDTH, 
-                             height: this.SNAIL_CELLS_HEIGHT },
-
-      { left: 2,   top: 466, width: this.SNAIL_CELLS_WIDTH, 
-                             height: this.SNAIL_CELLS_HEIGHT },
-   ]; 
-
    this.mushroomCells = [
       { left: 162, top: 3, width: this.MUSHROOM_CELLS_WIDTH,
                              height: this.MUSHROOM_CELLS_HEIGHT }
@@ -265,49 +213,44 @@ var SnailBait = function () {
    ];
 
    // Sprite data.......................................................
-   
-   this.buttonData = [
-      { platformIndex: 2 },
-      { platformIndex: 12 },
-   ];
 
-   this.coinData = [
-      { left: 270,  
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+   this.coinData = [ //Can this be split up into blue and gold coins? -Abby
+       { left: 270,  
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 489,  
-         top: this.TRACK_3_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 489,  
+          top: this.TRACK_3_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 620,  
-         top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 620,  
+          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 833,  
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 833,  
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 1050, 
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 1050, 
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 1450, 
-         top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 1450, 
+          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 1670, 
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 1670, 
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 1870, 
-         top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 1870, 
+          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 1930, 
-         top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 1930, 
+          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 2200, 
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 2200, 
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 2320, 
-         top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
+       { left: 2320, 
+          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
 
-      { left: 2360, 
-         top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
-   ];  
+       { left: 2360, 
+          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+    ];  
 
    // Platforms.........................................................
 
@@ -448,19 +391,19 @@ this.platformData = [
 
    this.gearData = [ //These are the locations of the gears on the game map
       { left: 70,  
-         top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
+         top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
 
       { left: 880,  
-         top: this.TRACK_2_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
+         top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
 
       { left: 1100, 
-         top: this.TRACK_2_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT }, 
+         top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT }, 
 
       { left: 1475, 
-         top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
+         top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
 
       { left: 2400, 
-         top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
+         top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
    ];
 
    this.mushroomData = [
@@ -501,23 +444,11 @@ this.platformData = [
          top: this.TRACK_3_BASELINE - -1.0*this.EGG5_CELLS_HEIGHT },
    ];
 
-   this.smokingHoleData = [
-      { left: 248,  top: this.TRACK_2_BASELINE - 22 },
-      { left: 688,  top: this.TRACK_3_BASELINE + 5 },
-      { left: 1352,  top: this.TRACK_2_BASELINE - 18 },
-   ];
-   
-   this.snailData = [ //Is this being used?
-      { platformIndex: 3 },
-   ];
-
    // Sprites...........................................................
   
-   this.buttons      = [];
    this.coins        = [];
    this.platforms    = [];
    this.gears        = []; //This creates the array that contains the gears
-   this.snails       = [];
    this.mushrooms    = [];
    this.bushes       = [];
    this.trees        = [];
@@ -590,7 +521,7 @@ this.platformData = [
 
    // Pacing on platforms...............................................
 
-   this.paceBehavior = { //Can be used to make objects bobble
+   this.paceBehavior = { //Can be used to make objects bobble? Currently breaks anything it is attached to -Abby
       setDirection: function (sprite) {
          var sRight = sprite.left + sprite.width,
              pRight = sprite.platform.left + sprite.platform.width;
@@ -624,45 +555,6 @@ this.platformData = [
                          lastAnimationFrameTime) {
          this.setDirection(sprite);
          this.setPosition(sprite, now, lastAnimationFrameTime);
-      }
-   };
-
-   // Snail shoot behavior..............................................
-
-   this.snailShootBehavior = { // sprite is the snail
-      execute: function (sprite, now, fps, context, 
-                         lastAnimationFrameTime) {
-         var bomb = sprite.bomb,
-                    MOUTH_OPEN_CELL = 2;
-
-         if ( ! snailBait.isSpriteInView(sprite)) {
-            return;
-         }
-
-         if ( ! bomb.visible && 
-              sprite.artist.cellIndex === MOUTH_OPEN_CELL) {
-            bomb.left = sprite.left;
-            bomb.visible = true;
-         }
-      }
-   };
-
-   // Move the snail bomb...............................................
-
-   this.snailBombMoveBehavior = {
-      execute: function (sprite, now, fps, context, 
-                         lastAnimationFrameTime) {
-         var SNAIL_BOMB_VELOCITY = 550;
-     
-         if ( sprite.left + sprite.width > sprite.hOffset &&
-              sprite.left + sprite.width < sprite.hOffset + sprite.width) {
-            sprite.visible = false;
-         }
-         else {
-            sprite.left -= SNAIL_BOMB_VELOCITY * 
-                           ((now - lastAnimationFrameTime) / 1000);
-
-         }
       }
    };
 
@@ -742,20 +634,12 @@ SnailBait.prototype = {
          this.sprites.push(this.platforms[i]);
       }
 
-      for (var i=0; i < this.buttons.length; ++i) {
-         this.sprites.push(this.buttons[i]);
-      }
-
       for (var i=0; i < this.coins.length; ++i) {
-         this.sprites.push(this.coins[i]);
-      }
+          this.sprites.push(this.coins[i]);
+       }
 
       for (var i=0; i < this.gears.length; ++i) { //This adds the gear sprites to the master list of sprites
          this.sprites.push(this.gears[i]);
-      }
-
-      for (var i=0; i < this.snails.length; ++i) {
-         this.sprites.push(this.snails[i]);
       }
 
       for (var i=0; i < this.mushrooms.length; ++i) {
@@ -799,18 +683,15 @@ SnailBait.prototype = {
       }
    },
    
-   initializeSprites: function() {  
-      this.positionSprites(this.buttons,   this.buttonData);
+   initializeSprites: function() {
       this.positionSprites(this.coins,     this.coinData);
       this.positionSprites(this.gears, this.gearData); //This spawns the gear sprites in the right spots
-      this.positionSprites(this.snails,    this.snailData);
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
       this.positionSprites(this.trees, this.treeData);
       this.positionSprites(this.egg4s, this.egg4Data);
       this.positionSprites(this.egg5s, this.egg5Data);
 
-      this.armSnails();
    },
 
    createMushroomSprites: function () {
@@ -887,54 +768,29 @@ SnailBait.prototype = {
          this.egg5s.push(egg5);
       }
    },
-
-   createButtonSprites: function () {
-      var button;
-
-      for (var i = 0; i < this.buttonData.length; ++i) {
-         if (i !== this.buttonData.length - 1) {
-            button = new Sprite('button',
-                        new SpriteSheetArtist(this.spritesheet,
-                                              this.blueButtonCells));
-
-            button.behaviors = [ this.paceBehavior ];
-         }
-         else {
-            button = new Sprite('button',
-                        new SpriteSheetArtist(this.spritesheet,
-                                              this.goldButtonCells));
-         }
-        
-         button.width = this.BUTTON_CELLS_WIDTH;
-         button.height = this.BUTTON_CELLS_HEIGHT;
-         button.velocityX = this.BUTTON_PACE_VELOCITY;
-
-         this.buttons.push(button);
-      }
-   },
    
    createCoinSprites: function () {
-      var coin;
+       var coin;
    
-      for (var i = 0; i < this.coinData.length; ++i) {
-         if (i % 2 === 0) {
-            coin = new Sprite('coin', 
-                          new SpriteSheetArtist(this.spritesheet,
-                                                this.goldCoinCells));
-         }
-         else {
-            coin = new Sprite('coin', 
-                          new SpriteSheetArtist(this.spritesheet,
-                                                this.blueCoinCells));
-         }
+       for (var i = 0; i < this.coinData.length; ++i) {
+          if (i % 2 === 0) {
+             coin = new Sprite('coin', 
+                           new SpriteSheetArtist(this.spritesheet,
+                                                 this.goldCoinCells));
+          }
+          else {
+             coin = new Sprite('coin', 
+                           new SpriteSheetArtist(this.spritesheet,
+                                                 this.blueCoinCells));
+          }
          
-         coin.width = this.COIN_CELLS_WIDTH;
-         coin.height = this.COIN_CELLS_HEIGHT;
-         coin.value = 50;
+          coin.width = this.COIN_CELLS_WIDTH;
+          coin.height = this.COIN_CELLS_HEIGHT;
+          coin.value = 50;
 
-         this.coins.push(coin);
-      }
-   },
+          this.coins.push(coin);
+       }
+    },
 
    createPlatformSprites: function () {
       var sprite, pd;  // Sprite, Platform data
@@ -950,7 +806,6 @@ SnailBait.prototype = {
          sprite.fillStyle = pd.fillStyle;
          sprite.opacity = pd.opacity;
          sprite.track = pd.track;
-         sprite.button = pd.button;
          sprite.pulsate = pd.pulsate;
 
          sprite.top = this.calculatePlatformTop(pd.track);
@@ -988,72 +843,23 @@ SnailBait.prototype = {
    },
 
    createGearSprites: function () { //This is the function that creates a gear and adds it to the array
-      var SAPPHIRE_SPARKLE_DURATION = 100, //Does not currently do anything, but could be used to make the sprite bobble?
-          SAPPHIRE_SPARKLE_INTERVAL = 300,
-          gear,
+      var gear,
           gearArtist = new SpriteSheetArtist(this.spritesheet,
                                                  this.gearCells);
    
       for (var i = 0; i < this.gearData.length; ++i) { //This generates the gears and fills the empty array
          gear = new Sprite('gear', 
-                               gearArtist,
-                               [ new CycleBehavior(SAPPHIRE_SPARKLE_DURATION,
-                                                   SAPPHIRE_SPARKLE_INTERVAL) ]);
+                               gearArtist);
 
-         gear.width = this.SAPPHIRE_CELLS_WIDTH;
-         gear.height = this.SAPPHIRE_CELLS_HEIGHT;
+         //gear.behaviors = [ this.paceBehavior ]; //Trying to make gears bobble Does not yet work, but may need this later -Abby
+
+         gear.width = this.GEAR_CELLS_WIDTH;
+         gear.height = this.GEAR_CELLS_HEIGHT;
+         //gear.velocityX = this.GEAR_PACE_VELOCITY; //Bobble velocity. Doesn't work yet -Abby
          gear.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
 
          this.gears.push(gear);
       }
-   },
-
-   createSnailSprites: function () {
-      var snail,
-          snailArtist = new SpriteSheetArtist(this.spritesheet, 
-                                              this.snailCells);
-   
-      for (var i = 0; i < this.snailData.length; ++i) {
-         snail = new Sprite('snail',
-                            snailArtist,
-                            [ this.paceBehavior,
-                              this.snailShootBehavior,
-                              new CycleBehavior(300,  // 300ms per image
-                                                1500) // 1.5 seconds interlude 
-                            ]);
-
-         snail.width  = this.SNAIL_CELLS_WIDTH;
-         snail.height = this.SNAIL_CELLS_HEIGHT;
-         snail.velocityX = snailBait.SNAIL_PACE_VELOCITY;
-
-         this.snails.push(snail);
-      }
-   },
-
-   armSnails: function () {
-      var snail,
-          snailBombArtist = new SpriteSheetArtist(this.spritesheet,
-                                                  this.snailBombCells);
-
-      for (var i=0; i < this.snails.length; ++i) {
-         snail = this.snails[i];
-         snail.bomb = new Sprite('snail bomb',
-                                  snailBombArtist,
-                                  [ this.snailBombMoveBehavior ]);
-
-         snail.bomb.width  = snailBait.SNAIL_BOMB_CELLS_WIDTH;
-         snail.bomb.height = snailBait.SNAIL_BOMB_CELLS_HEIGHT;
-
-         snail.bomb.top = snail.top + snail.bomb.height/2;
-         snail.bomb.left = snail.left + snail.bomb.width/2;
-         snail.bomb.visible = false;
-  
-         // Snail bombs maintain a reference to their snail
-
-         snail.bomb.snail = snail;
-
-         this.sprites.push(snail.bomb);
-      }      
    },
 
    isSpriteInView: function(sprite) {
