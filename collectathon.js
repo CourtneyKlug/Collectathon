@@ -238,7 +238,7 @@ var SnailBait = function () {
                               height: this.BUTTON_CELLS_HEIGHT }
    ];
 
-   this.sapphireCells = [
+   this.sapphireCells = [ //This is the location of the gear sprite
       { left: 0,   top: 0, width: this.RUBY_CELLS_WIDTH,
                              height: this.RUBY_CELLS_HEIGHT } // ,
 
@@ -686,7 +686,7 @@ this.platformData = [
    this.coins        = [];
    this.platforms    = [];
    this.rubies       = [];
-   this.sapphires    = [];
+   this.sapphires    = []; //This creates the array that contains the gears
    this.snails       = [];
    this.mushrooms    = [];
    this.bushes       = [];
@@ -893,7 +893,7 @@ SnailBait.prototype = {
       this.createCoinSprites();
       this.createRunnerSprite(); 
       this.createRubySprites();
-      this.createSapphireSprites();
+      this.createSapphireSprites(); //Creates gears
       // this.createSnailSprites();
       this.createMushroomSprites();
       this.createBushSprites();
@@ -930,7 +930,7 @@ SnailBait.prototype = {
          this.sprites.push(this.rubies[i]);
       }
 
-      for (var i=0; i < this.sapphires.length; ++i) {
+      for (var i=0; i < this.sapphires.length; ++i) { //This adds the gear sprites to the master list of sprites
          this.sprites.push(this.sapphires[i]);
       }
 
@@ -972,7 +972,7 @@ SnailBait.prototype = {
       this.positionSprites(this.buttons,   this.buttonData);
       this.positionSprites(this.coins,     this.coinData);
       this.positionSprites(this.rubies,    this.rubyData);
-      this.positionSprites(this.sapphires, this.sapphireData);
+      this.positionSprites(this.sapphires, this.sapphireData); //This spawns the gear sprites
       this.positionSprites(this.snails,    this.snailData);
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
@@ -1163,7 +1163,7 @@ SnailBait.prototype = {
        this.sprites.push(this.runner);
    },
 
-   createSapphireSprites: function () {
+   createSapphireSprites: function () { //This is the function that creates a gear and adds it to the array
       var SAPPHIRE_SPARKLE_DURATION = 100,
           SAPPHIRE_SPARKLE_INTERVAL = 300,
           sapphire,
