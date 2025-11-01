@@ -27,7 +27,7 @@ var SnailBait = function () {
 
    // Velocities........................................................
 
-   this.GEAR_PACE_VELOCITY = 80; //Makes gears bobble. Doesn't work yet -Abby
+   this.GEAR_PACE_VELOCITY = 80; //May be used to make gears bobble. Doesn't work yet -Abby
 
    // Loading screen....................................................
 
@@ -575,7 +575,7 @@ this.platformData = [
          
          s = sprite.calculateCollisionRectangle(),
          o = otherSprite.calculateCollisionRectangle();
-         console.log("Same column"); //Not triggering. Either I'm putting this in the wrong place, or this isn't actually running yet. -Abby
+         console.log("Same column");
          
          return o.left < s.right &&
                 sprite !== otherSprite;
@@ -590,7 +590,7 @@ this.platformData = [
 
          context.beginPath();
          context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
-         console.log("Collision detected"); //Not triggering. Either I'm putting this in the wrong place, or this isn't actually running yet. -Abby
+         console.log("Collision detected");
 
          return context.isPointInPath(r.left,  r.top)       ||
                 context.isPointInPath(r.right, r.top)       ||
