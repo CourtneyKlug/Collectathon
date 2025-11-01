@@ -238,7 +238,7 @@ var SnailBait = function () {
                               height: this.BUTTON_CELLS_HEIGHT }
    ];
 
-   this.sapphireCells = [ //This is the location of the gear sprite
+   this.sapphireCells = [ //This is the location of the gear sprite on the sprite sheet
       { left: 0,   top: 0, width: this.RUBY_CELLS_WIDTH,
                              height: this.RUBY_CELLS_HEIGHT } // ,
 
@@ -255,7 +255,7 @@ var SnailBait = function () {
                              // height: this.RUBY_CELLS_HEIGHT }
    ];
 
-   this.runnerCellsRight = [
+   this.runnerCellsRight = [ //Do we still need this if we have Izzy cell data? -Abby
       { left: 414, top: 385, 
         width: 47, height: this.RUNNER_CELLS_HEIGHT },
 
@@ -284,7 +284,7 @@ var SnailBait = function () {
          width: 35, height: this.RUNNER_CELLS_HEIGHT }
    ],
 
-   this.runnerCellsLeft = [
+   this.runnerCellsLeft = [ //Do we still need this if we have Izzy cell data?
       { left: 0,   top: 305, 
          width: 47, height: this.RUNNER_CELLS_HEIGHT },
 
@@ -348,7 +348,7 @@ var SnailBait = function () {
    ],
 
    this.rubyCells = [
-      { left: 65,   top: 4, width: this.SAPPHIRE_CELLS_WIDTH,
+      { left: 65,   top: 4, width: this.SAPPHIRE_CELLS_WIDTH, //Why is this swapped with Ruby data? Are we using the Ruby data? Can they be condensed into just Gear data? -Abby
                              height: this.SAPPHIRE_CELLS_HEIGHT } // ,
 
       // { left: 220,  top: 138, width: this.SAPPHIRE_CELLS_WIDTH, 
@@ -618,9 +618,9 @@ this.platformData = [
       },
    ];
 
-   this.sapphireData = [
+   this.sapphireData = [ //These are the locations of the gears on the game map
       { left: 70,  
-         top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
+         top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
 
       { left: 880,  
          top: this.TRACK_2_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
@@ -757,7 +757,7 @@ this.platformData = [
 
    // Pacing on platforms...............................................
 
-   this.paceBehavior = {
+   this.paceBehavior = { //Can be used to make objects bobble
       setDirection: function (sprite) {
          var sRight = sprite.left + sprite.width,
              pRight = sprite.platform.left + sprite.platform.width;
@@ -845,7 +845,7 @@ this.platformData = [
    };
 
    this.collideBehavior = {
-      isCandidateForCollision: function (sprite, otherSprite) {
+      isCandidateForCollision: function (sprite, otherSprite) { //Checks if sprites are close to each other
          var s, o;
          
          s = sprite.calculateCollisionRectangle(),
@@ -855,7 +855,7 @@ this.platformData = [
                 sprite !== otherSprite;
       },
 
-      didCollide: function (sprite, otherSprite, context) {
+      didCollide: function (sprite, otherSprite, context) { //Checks if sprites are actually overlapping
          var o = otherSprite.calculateCollisionRectangle(),
              r = sprite.calculateCollisionRectangle();
 
@@ -1135,7 +1135,7 @@ SnailBait.prototype = {
       }
    },
 
-   createRunnerSprite: function () {
+   createRunnerSprite: function () { //Creates Izzy
       var RUNNER_LEFT = 50,
           RUNNER_HEIGHT = 40,
           STARTING_RUNNER_TRACK = 1,
@@ -1164,13 +1164,13 @@ SnailBait.prototype = {
    },
 
    createSapphireSprites: function () { //This is the function that creates a gear and adds it to the array
-      var SAPPHIRE_SPARKLE_DURATION = 100,
+      var SAPPHIRE_SPARKLE_DURATION = 100, 
           SAPPHIRE_SPARKLE_INTERVAL = 300,
           sapphire,
           sapphireArtist = new SpriteSheetArtist(this.spritesheet,
                                                  this.sapphireCells);
    
-      for (var i = 0; i < this.sapphireData.length; ++i) {
+      for (var i = 0; i < this.sapphireData.length; ++i) { //This currently does not do anything, but this could be used to make the gears bob up and down. As it is, we would need to add new sprites to make that happen. -Abby
          sapphire = new Sprite('sapphire', 
                                sapphireArtist,
                                [ new CycleBehavior(SAPPHIRE_SPARKLE_DURATION,
@@ -1178,7 +1178,7 @@ SnailBait.prototype = {
 
          sapphire.width = this.SAPPHIRE_CELLS_WIDTH;
          sapphire.height = this.SAPPHIRE_CELLS_HEIGHT;
-         sapphire.value = 100;
+         sapphire.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
 
          this.sapphires.push(sapphire);
       }
@@ -1426,13 +1426,13 @@ SnailBait.prototype = {
       return platformUnderneath;
    },
 
-   turnLeft: function () {
+   turnLeft: function () { //Allows movement to left
       this.bgVelocity = -this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
       this.runner.artist.cells = this.izzyCellsLeft;
    },
 
-   turnRight: function () {
+   turnRight: function () { //Allows movement to right
       this.bgVelocity = this.BACKGROUND_VELOCITY;
       this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
       this.runner.artist.cells = this.izzyCellsRight;
@@ -1641,8 +1641,8 @@ SnailBait.prototype = {
 
 // Event handlers.......................................................
 
-window.onkeydown = function (e) {
-   var key = e.keyCode;
+window.onkeydown = function (e) { //Defines key bindings
+   var key = e.keyCode; //Can the backup keys be changed to WASD? -Abby
 
    if (key === 68 || key === 37) { // 'd' or left arrow
       snailBait.turnLeft();
