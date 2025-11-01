@@ -27,14 +27,14 @@ var SnailBait = function () {
 
    // Velocities........................................................
 
-   this.BUTTON_PACE_VELOCITY = 80;
+   this.BUTTON_PACE_VELOCITY = 80; //May be used to make items bobble
    this.SNAIL_PACE_VELOCITY = 50;
 
    // Loading screen....................................................
 
    this.loadingElement = document.getElementById('loading');
    this.loadingTitleElement = document.getElementById('loading-title');
-   this.runnerAnimatedGIFElement = 
+   this.loadingAnimatedGIFElement = 
       document.getElementById('loading-animated-gif');
 
    // Track baselines...................................................
@@ -96,10 +96,6 @@ var SnailBait = function () {
    // Sound and music...................................................
 
    this.soundAndMusicElement = document.getElementById('sound-and-music');
-
-   // Runner track......................................................
-
-   this.runnerTrack = this.STARTING_RUNNER_TRACK,
    
    // Translation offsets...............................................
    
@@ -115,17 +111,10 @@ var SnailBait = function () {
    this.platformVelocity,
 
      // Sprite sheet cells................................................
-
-   this.RUNNER_CELLS_WIDTH = 50; // pixels
-   this.RUNNER_CELLS_HEIGHT = 54;
+     // All measurements are in pixels
 
    this.IZZY_CELLS_WIDTH = 55;
    this.IZZY_CELLS_HEIGHT = 40;
-
-   this.BAT_CELLS_HEIGHT = 34; // Bat cell width varies; not constant 
-
-   this.BEE_CELLS_HEIGHT = 50;
-   this.BEE_CELLS_WIDTH  = 50;
 
    this.BUTTON_CELLS_HEIGHT  = 20;
    this.BUTTON_CELLS_WIDTH   = 31;
@@ -135,8 +124,8 @@ var SnailBait = function () {
    
    this.EXPLOSION_CELLS_HEIGHT = 62;
 
-   this.RUBY_CELLS_HEIGHT = 30;
-   this.RUBY_CELLS_WIDTH = 29;
+   this.GEAR_CELLS_HEIGHT = 30; //Height of the gear sprite
+   this.RUBY_CELLS_WIDTH = 29; //Width of the gear sprite
 
    this.SAPPHIRE_CELLS_HEIGHT = 30;
    this.SAPPHIRE_CELLS_WIDTH  = 39;
@@ -162,67 +151,12 @@ var SnailBait = function () {
    this.EGG5_CELLS_HEIGHT = 50;
    this.EGG5_CELLS_WIDTH = 40;
 
-   
-
-   this.batCells = [
-      { left: 3,   top: 0, width: 36, height: this.BAT_CELLS_HEIGHT },
-      { left: 41,  top: 0, width: 46, height: this.BAT_CELLS_HEIGHT },
-      { left: 93,  top: 0, width: 36, height: this.BAT_CELLS_HEIGHT },
-      { left: 132, top: 0, width: 46, height: this.BAT_CELLS_HEIGHT },
-   ];
-
-   this.batRedEyeCells = [
-      { left: 185, top: 0, 
-        width: 36, height: this.BAT_CELLS_HEIGHT },
-
-      { left: 222, top: 0, 
-        width: 46, height: this.BAT_CELLS_HEIGHT },
-
-      { left: 273, top: 0, 
-        width: 36, height: this.BAT_CELLS_HEIGHT },
-
-      { left: 313, top: 0, 
-        width: 46, height: this.BAT_CELLS_HEIGHT },
-   ];
-   
-   this.beeCells = [
-      { left: 5,   top: 234, width: this.BEE_CELLS_WIDTH,
-                            height: this.BEE_CELLS_HEIGHT },
-
-      { left: 75,  top: 234, width: this.BEE_CELLS_WIDTH, 
-                            height: this.BEE_CELLS_HEIGHT },
-
-      { left: 145, top: 234, width: this.BEE_CELLS_WIDTH, 
-                            height: this.BEE_CELLS_HEIGHT }
-   ];
-   
-   this.blueCoinCells = [
-      { left: 125, top: 2, width: this.COIN_CELLS_WIDTH, 
-                           height: this.COIN_CELLS_HEIGHT } //,
-
-      // { left: 5 + this.COIN_CELLS_WIDTH, top: 540,
-        // width: this.COIN_CELLS_WIDTH, 
-        // height: this.COIN_CELLS_HEIGHT }
-   ];
-
-   this.explosionCells = [
-      { left: 3,   top: 48, 
-        width: 52, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 63,  top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 146, top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 233, top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 308, top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 392, top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT },
-      { left: 473, top: 48, 
-        width: 70, height: this.EXPLOSION_CELLS_HEIGHT }
-   ];
 
    // Sprite sheet cells................................................
+   this.blueCoinCells = [
+       { left: 125, top: 2, width: this.COIN_CELLS_WIDTH, 
+                            height: this.COIN_CELLS_HEIGHT }
+   ];
 
    this.blueButtonCells = [
       { left: 10,   top: 192, width: this.BUTTON_CELLS_WIDTH,
@@ -234,11 +168,7 @@ var SnailBait = function () {
 
    this.goldCoinCells = [
       { left: 104, top: 3, width: this.COIN_CELLS_WIDTH, 
-                            height: this.COIN_CELLS_HEIGHT } // ,
-      // { left: 96, top: 540, width: this.COIN_CELLS_WIDTH, 
-                            // height: this.COIN_CELLS_HEIGHT },
-      // { left: 128, top: 540, width: this.COIN_CELLS_WIDTH, 
-                             // height: this.COIN_CELLS_HEIGHT },
+                            height: this.COIN_CELLS_HEIGHT }
    ];
 
    this.goldButtonCells = [
@@ -249,80 +179,10 @@ var SnailBait = function () {
                               height: this.BUTTON_CELLS_HEIGHT }
    ];
 
-   this.sapphireCells = [ //This is the location of the gear sprite on the sprite sheet
+   this.gearCells = [ //This is the location of the gear sprite on the sprite sheet
       { left: 0,   top: 0, width: this.RUBY_CELLS_WIDTH,
-                             height: this.RUBY_CELLS_HEIGHT } // ,
-
-      // { left: 39,  top: 138, width: this.RUBY_CELLS_WIDTH, 
-                             // height: this.RUBY_CELLS_HEIGHT },
-
-      // { left: 76,  top: 138, width: this.RUBY_CELLS_WIDTH, 
-                             // height: this.RUBY_CELLS_HEIGHT },
-
-      // { left: 112, top: 138, width: this.RUBY_CELLS_WIDTH, 
-                             // height: this.RUBY_CELLS_HEIGHT },
-
-      // { left: 148, top: 138, width: this.RUBY_CELLS_WIDTH, 
-                             // height: this.RUBY_CELLS_HEIGHT }
+                             height: this.GEAR_CELLS_HEIGHT }
    ];
-
-   this.runnerCellsRight = [ //Do we still need this if we have Izzy cell data? -Abby
-      { left: 414, top: 385, 
-        width: 47, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 362, top: 385, 
-         width: 44, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 314, top: 385, 
-         width: 39, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 265, top: 385, 
-         width: 46, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 205, top: 385, 
-         width: 49, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 150, top: 385, 
-         width: 46, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 96,  top: 385, 
-         width: 46, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 45,  top: 385, 
-         width: 35, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 0,   top: 385, 
-         width: 35, height: this.RUNNER_CELLS_HEIGHT }
-   ],
-
-   this.runnerCellsLeft = [ //Do we still need this if we have Izzy cell data?
-      { left: 0,   top: 305, 
-         width: 47, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 55,  top: 305, 
-         width: 44, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 107, top: 305, 
-         width: 39, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 152, top: 305, 
-         width: 46, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 208, top: 305, 
-         width: 49, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 265, top: 305, 
-         width: 46, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 320, top: 305, 
-         width: 42, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 380, top: 305, 
-         width: 35, height: this.RUNNER_CELLS_HEIGHT },
-
-      { left: 425, top: 305, 
-         width: 35, height: this.RUNNER_CELLS_HEIGHT },
-   ],
 
    this.izzyCellsRight = [
       { left: 527, top: 5139,
@@ -360,19 +220,7 @@ var SnailBait = function () {
 
    this.rubyCells = [
       { left: 65,   top: 4, width: this.SAPPHIRE_CELLS_WIDTH, //Why is this swapped with Ruby data? Are we using the Ruby data? Can they be condensed into just Gear data? -Abby
-                             height: this.SAPPHIRE_CELLS_HEIGHT } // ,
-
-      // { left: 220,  top: 138, width: this.SAPPHIRE_CELLS_WIDTH, 
-                             // height: this.SAPPHIRE_CELLS_HEIGHT },
-
-      // { left: 258,  top: 138, width: this.SAPPHIRE_CELLS_WIDTH, 
-                             // height: this.SAPPHIRE_CELLS_HEIGHT },
-
-      // { left: 294, top: 138, width: this.SAPPHIRE_CELLS_WIDTH, 
-                             // height: this.SAPPHIRE_CELLS_HEIGHT },
-
-      // { left: 331, top: 138, width: this.SAPPHIRE_CELLS_WIDTH, 
-                             // height: this.SAPPHIRE_CELLS_HEIGHT }
+                             height: this.SAPPHIRE_CELLS_HEIGHT }
    ];
 
    this.snailBombCells = [
@@ -417,52 +265,6 @@ var SnailBait = function () {
    ];
 
    // Sprite data.......................................................
-
-   this.batData = [
-      { left: 85,  
-         top: this.TRACK_2_BASELINE - 1.5*this.BAT_CELLS_HEIGHT },
-
-      { left: 620,  
-         top: this.TRACK_3_BASELINE },
-
-      { left: 904,  
-         top: this.TRACK_3_BASELINE - 3*this.BAT_CELLS_HEIGHT },
-
-      { left: 1150, 
-         top: this.TRACK_2_BASELINE - 3*this.BAT_CELLS_HEIGHT },
-
-      { left: 1720, 
-         top: this.TRACK_2_BASELINE - 2*this.BAT_CELLS_HEIGHT },
-
-      { left: 1960, 
-         top: this.TRACK_3_BASELINE - this.BAT_CELLS_HEIGHT }, 
-
-      { left: 2200, 
-         top: this.TRACK_3_BASELINE - this.BAT_CELLS_HEIGHT },
-
-      { left: 2380, 
-         top: this.TRACK_3_BASELINE - 2*this.BAT_CELLS_HEIGHT },
-   ];
-   
-   this.beeData = [
-      { left: 200,  
-         top: this.TRACK_1_BASELINE - this.BEE_CELLS_HEIGHT*1.5 },
-      { left: 350,  
-         top: this.TRACK_2_BASELINE - this.BEE_CELLS_HEIGHT*1.5 },
-      { left: 550,  
-         top: this.TRACK_1_BASELINE - this.BEE_CELLS_HEIGHT },
-      { left: 750,  
-         top: this.TRACK_1_BASELINE - this.BEE_CELLS_HEIGHT*1.5 },
-
-      { left: 924,  
-         top: this.TRACK_2_BASELINE - this.BEE_CELLS_HEIGHT*1.75 },
-
-      { left: 1500, top: 225 },
-      { left: 1600, top: 115 },
-      { left: 2225, top: 125 },
-      { left: 2295, top: 275 },
-      { left: 2450, top: 275 },
-   ];
    
    this.buttonData = [
       { platformIndex: 2 },
@@ -644,7 +446,7 @@ this.platformData = [
       },
    ];
 
-   this.sapphireData = [ //These are the locations of the gears on the game map
+   this.gearData = [ //These are the locations of the gears on the game map
       { left: 70,  
          top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
 
@@ -659,17 +461,6 @@ this.platformData = [
 
       { left: 2400, 
          top: this.TRACK_1_BASELINE - 1.5*this.SAPPHIRE_CELLS_HEIGHT },
-   ];
-
-   this.rubyData = [
-      { left: 690,  
-         top: this.TRACK_1_BASELINE - this.RUBY_CELLS_HEIGHT },
-
-      { left: 1700, 
-         top: this.TRACK_2_BASELINE - this.RUBY_CELLS_HEIGHT },
-
-      { left: 2056, 
-         top: this.TRACK_2_BASELINE - this.RUBY_CELLS_HEIGHT },
    ];
 
    this.mushroomData = [
@@ -716,19 +507,16 @@ this.platformData = [
       { left: 1352,  top: this.TRACK_2_BASELINE - 18 },
    ];
    
-   this.snailData = [
+   this.snailData = [ //Is this being used?
       { platformIndex: 3 },
    ];
 
    // Sprites...........................................................
   
-   this.bats         = [];
-   this.bees         = []; 
    this.buttons      = [];
    this.coins        = [];
    this.platforms    = [];
-   this.rubies       = [];
-   this.sapphires    = []; //This creates the array that contains the gears
+   this.gears        = []; //This creates the array that contains the gears
    this.snails       = [];
    this.mushrooms    = [];
    this.bushes       = [];
@@ -895,6 +683,7 @@ this.platformData = [
          
          s = sprite.calculateCollisionRectangle(),
          o = otherSprite.calculateCollisionRectangle();
+         console.log("Same column"); //Not triggering. Either I'm putting this in the wrong place, or this isn't actually running yet. -Abby
          
          return o.left < s.right &&
                 sprite !== otherSprite;
@@ -904,11 +693,12 @@ this.platformData = [
          var o = otherSprite.calculateCollisionRectangle(),
              r = sprite.calculateCollisionRectangle();
 
-         // Determine if either of the runner's four corners or its
+         // Determine if any of Izzy's four corners or its
          // center lie within the other sprite's bounding box.
 
          context.beginPath();
          context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
+         console.log("Collision detected"); //Not triggering. Either I'm putting this in the wrong place, or this isn't actually running yet. -Abby
 
          return context.isPointInPath(r.left,  r.top)       ||
                 context.isPointInPath(r.right, r.top)       ||
@@ -930,16 +720,10 @@ this.platformData = [
 
 SnailBait.prototype = {
    createSprites: function () {
-      this.createPlatformSprites(); 
-
-      // this.createBatSprites();
-      // this.createBeeSprites();
-      // this.createButtonSprites();
+      this.createPlatformSprites();
       this.createCoinSprites();
-      this.createRunnerSprite(); 
-      this.createRubySprites();
-      this.createSapphireSprites(); //Creates gears
-      // this.createSnailSprites();
+      this.createIzzySprite(); 
+      this.createGearSprites(); //Creates gears
       this.createMushroomSprites();
       this.createBushSprites();
       this.createTreeSprites();
@@ -958,14 +742,6 @@ SnailBait.prototype = {
          this.sprites.push(this.platforms[i]);
       }
 
-      for (var i=0; i < this.bats.length; ++i) {
-         this.sprites.push(this.bats[i]);
-      }
-
-      for (var i=0; i < this.bees.length; ++i) {
-         this.sprites.push(this.bees[i]);
-      }
-
       for (var i=0; i < this.buttons.length; ++i) {
          this.sprites.push(this.buttons[i]);
       }
@@ -974,12 +750,8 @@ SnailBait.prototype = {
          this.sprites.push(this.coins[i]);
       }
 
-      for (var i=0; i < this.rubies.length; ++i) {
-         this.sprites.push(this.rubies[i]);
-      }
-
-      for (var i=0; i < this.sapphires.length; ++i) { //This adds the gear sprites to the master list of sprites
-         this.sprites.push(this.sapphires[i]);
+      for (var i=0; i < this.gears.length; ++i) { //This adds the gear sprites to the master list of sprites
+         this.sprites.push(this.gears[i]);
       }
 
       for (var i=0; i < this.snails.length; ++i) {
@@ -1007,7 +779,7 @@ SnailBait.prototype = {
          this.sprites.push(this.egg5s[i]);
       }
 
-      this.sprites.push(this.runner);
+      this.sprites.push(this.izzy);
    },
 
    positionSprites: function (sprites, spriteData) {
@@ -1028,12 +800,9 @@ SnailBait.prototype = {
    },
    
    initializeSprites: function() {  
-      this.positionSprites(this.bats,      this.batData);
-      this.positionSprites(this.bees,      this.beeData);
       this.positionSprites(this.buttons,   this.buttonData);
       this.positionSprites(this.coins,     this.coinData);
-      this.positionSprites(this.rubies,    this.rubyData);
-      this.positionSprites(this.sapphires, this.sapphireData); //This spawns the gear sprites
+      this.positionSprites(this.gears, this.gearData); //This spawns the gear sprites in the right spots
       this.positionSprites(this.snails,    this.snailData);
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
@@ -1042,23 +811,6 @@ SnailBait.prototype = {
       this.positionSprites(this.egg5s, this.egg5Data);
 
       this.armSnails();
-   },
-
-   createBatSprites: function () {
-      var bat;
-
-      for (var i = 0; i < this.batData.length; ++i) {
-         bat = new Sprite('bat',
-                          new SpriteSheetArtist(this.spritesheet, 
-                                                this.batCells));
-
-         // bat cell width varies; batCells[1] is widest
-
-         bat.width = this.batCells[1].width; 
-         bat.height = this.BAT_CELLS_HEIGHT;
-
-         this.bats.push(bat);
-      }
    },
 
    createMushroomSprites: function () {
@@ -1136,22 +888,6 @@ SnailBait.prototype = {
       }
    },
 
-   createBeeSprites: function () {
-      var bee,
-          beeArtist;
-
-      for (var i = 0; i < this.beeData.length; ++i) {
-         bee = new Sprite('bee',
-                          new SpriteSheetArtist(this.spritesheet, 
-                                                this.beeCells));
-
-         bee.width = this.BEE_CELLS_WIDTH;
-         bee.height = this.BEE_CELLS_HEIGHT;
-
-         this.bees.push(bee);
-      }
-   },
-
    createButtonSprites: function () {
       var button;
 
@@ -1222,74 +958,53 @@ SnailBait.prototype = {
          this.platforms.push(sprite);
       }
    },
-   
-   createRubySprites: function () {
-      var RUBY_SPARKLE_DURATION = 100,
-          RUBY_SPARKLE_INTERVAL = 500,
-          ruby,
-          rubyArtist = new SpriteSheetArtist(this.spritesheet,
-                                             this.rubyCells);
-   
-      for (var i = 0; i < this.rubyData.length; ++i) {
-         ruby = new Sprite('ruby', 
-                            rubyArtist,
-                            [ new CycleBehavior(RUBY_SPARKLE_DURATION,
-                                                RUBY_SPARKLE_INTERVAL) ]);
 
-         ruby.width = this.RUBY_CELLS_WIDTH;
-         ruby.height = this.RUBY_CELLS_HEIGHT;
-         ruby.value = 200;
-         
-         this.rubies.push(ruby);
-      }
-   },
-
-   createRunnerSprite: function () { //Creates Izzy
-      var RUNNER_LEFT = 50,
-          RUNNER_HEIGHT = 40,
-          STARTING_RUNNER_TRACK = 1,
+   createIzzySprite: function () { //Creates Izzy
+      var IZZY_LEFT = 50,
+          IZZY_HEIGHT = 40,
+          IZZY_STARTING_TRACK = 1, //Determines which track Izzy starts on
           STARTING_RUN_ANIMATION_RATE = 0;
 
-       this.runner = new Sprite('runner',
+       this.izzy = new Sprite('izzy',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.izzyCellsRight),
            [this.runBehavior, this.fallBehavior, this.jumpBehavior ]); 
 
-       this.runner.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
+       this.izzy.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
 
-       this.runner.track = STARTING_RUNNER_TRACK;
-       this.runner.left = RUNNER_LEFT;
-       this.runner.top = this.calculatePlatformTop(this.runner.track) -
-                            RUNNER_HEIGHT;
+       this.izzy.track = IZZY_STARTING_TRACK;
+       this.izzy.left = IZZY_LEFT;
+       this.izzy.top = this.calculatePlatformTop(this.izzy.track) -
+                            IZZY_HEIGHT;
 
-       this.runner.collisionMargin = {
+       this.izzy.collisionMargin = {
            left: 20,
            top: 15, 
            right: 15,
            bottom: 20,
        };
 
-       this.sprites.push(this.runner);
+       this.sprites.push(this.izzy);
    },
 
-   createSapphireSprites: function () { //This is the function that creates a gear and adds it to the array
-      var SAPPHIRE_SPARKLE_DURATION = 100, 
+   createGearSprites: function () { //This is the function that creates a gear and adds it to the array
+      var SAPPHIRE_SPARKLE_DURATION = 100, //Does not currently do anything, but could be used to make the sprite bobble?
           SAPPHIRE_SPARKLE_INTERVAL = 300,
-          sapphire,
-          sapphireArtist = new SpriteSheetArtist(this.spritesheet,
-                                                 this.sapphireCells);
+          gear,
+          gearArtist = new SpriteSheetArtist(this.spritesheet,
+                                                 this.gearCells);
    
-      for (var i = 0; i < this.sapphireData.length; ++i) { //This currently does not do anything, but this could be used to make the gears bob up and down. As it is, we would need to add new sprites to make that happen. -Abby
-         sapphire = new Sprite('sapphire', 
-                               sapphireArtist,
+      for (var i = 0; i < this.gearData.length; ++i) { //This generates the gears and fills the empty array
+         gear = new Sprite('gear', 
+                               gearArtist,
                                [ new CycleBehavior(SAPPHIRE_SPARKLE_DURATION,
                                                    SAPPHIRE_SPARKLE_INTERVAL) ]);
 
-         sapphire.width = this.SAPPHIRE_CELLS_WIDTH;
-         sapphire.height = this.SAPPHIRE_CELLS_HEIGHT;
-         sapphire.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
+         gear.width = this.SAPPHIRE_CELLS_WIDTH;
+         gear.height = this.SAPPHIRE_CELLS_HEIGHT;
+         gear.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
 
-         this.sapphires.push(sapphire);
+         this.gears.push(gear);
       }
    },
 
@@ -1378,14 +1093,9 @@ SnailBait.prototype = {
    draw: function (now) {
       this.setPlatformVelocity();
       this.setOffsets(now);
-
       this.drawBackground();
       this.updateSprites(now);
       this.drawSprites();
-      /*
-      this.drawRunner();
-      this.drawPlatforms();
-      */
    },
 
    setPlatformVelocity: function () {
@@ -1419,7 +1129,7 @@ SnailBait.prototype = {
       for (var i=0; i < this.sprites.length; ++i) {
          sprite = this.sprites[i];
 
-         if ('runner' !== sprite.type) {
+         if ('izzy' !== sprite.type) {
             sprite.hOffset = this.spriteOffset; 
          }
       }
@@ -1537,14 +1247,14 @@ SnailBait.prototype = {
 
    turnLeft: function () { //Allows movement to left
       this.bgVelocity = -this.BACKGROUND_VELOCITY;
-      this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
-      this.runner.artist.cells = this.izzyCellsLeft;
+      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE;
+      this.izzy.artist.cells = this.izzyCellsLeft;
    },
 
    turnRight: function () { //Allows movement to right
       this.bgVelocity = this.BACKGROUND_VELOCITY;
-      this.runner.runAnimationRate = this.RUN_ANIMATION_RATE;
-      this.runner.artist.cells = this.izzyCellsRight;
+      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE;
+      this.izzy.artist.cells = this.izzyCellsRight;
    },
 
    fadeInElements: function () {
@@ -1651,20 +1361,20 @@ SnailBait.prototype = {
 
    loadingAnimationLoaded: function () {
       if (!this.gameStarted) {
-         this.fadeInElements(this.runnerAnimatedGIFElement,
+         this.fadeInElements(this.loadingAnimatedGIFElement,
           this.loadingTitleElement);
       }
    },
 
    initializeImages: function () {
       this.spritesheet.src = 'images/itt_spritesheet_full.png';
-      this.runnerAnimatedGIFElement.src = 'images/snail.gif';
+      this.loadingAnimatedGIFElement.src = 'images/snail.gif';
 
       this.spritesheet.onload = function (e) {
          snailBait.backgroundLoaded();
       };
 
-      this.runnerAnimatedGIFElement.onload = function () {
+      this.loadingAnimatedGIFElement.onload = function () {
          snailBait.loadingAnimationLoaded();
       };
 
@@ -1763,7 +1473,7 @@ window.onkeydown = function (e) { //Defines key bindings
       snailBait.togglePaused();
     }
    else if (key === 74 || key === 32) { // 'j' or spacebar for jump
-       snailBait.jumpBehavior.startJump(snailBait.runner);
+       snailBait.jumpBehavior.startJump(snailBait.izzy);
    }
 };
 
