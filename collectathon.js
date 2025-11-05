@@ -3,6 +3,15 @@ var SnailBait = function () {
    this.context = this.canvas.getContext('2d'),
    this.fpsElement = document.getElementById('fps'),
 
+   // Time..............................................................
+
+   this.timeSystem = new TimeSystem(); // See js/timeSystem.js
+
+   this.timeRate = 1.0; // 1.0 is normal speed, 0.5 is 1/2 speed, etc.
+   
+   this.SHORT_DELAY = 50; // milliseconds
+   this.TIME_RATE_DURING_TRANSITIONS = 0.2; // percent
+
    // Constants.........................................................
 
    this.LEFT = 1,
@@ -115,8 +124,9 @@ var SnailBait = function () {
    this.IZZY_CELLS_WIDTH = 55;
    this.IZZY_CELLS_HEIGHT = 40;
 
-   this.COIN_CELLS_HEIGHT = 30;
-   this.COIN_CELLS_WIDTH  = 23;
+   this.EGG_CELLS_HEIGHT = 30;
+   this.EGG_CELLS_WIDTH  = 22;
+   this.EGG3_CELLS_WIDTH = 35;
 
    this.GEAR_CELLS_HEIGHT = 30; //Height of the gear sprite
    this.GEAR_CELLS_WIDTH = 29; //Width of the gear sprite
@@ -136,17 +146,38 @@ var SnailBait = function () {
    this.EGG5_CELLS_HEIGHT = 50;
    this.EGG5_CELLS_WIDTH = 40;
 
+   this.DINO_CELLS_HEIGHT = 50;
+   this.DINO_CELLS_WIDTH = 50;
+
+   this.LEAF_CELLS_HEIGHT = 50;
+   this.LEAF_CELLS_WIDTH = 60;
+
 
    // Sprite sheet cells................................................
-    this.blueCoinCells = [
-        { left: 125, top: 2, width: this.COIN_CELLS_WIDTH, 
-                             height: this.COIN_CELLS_HEIGHT }
+    this.egg1Cells = [
+        { left: 125, top: 2, width: this.EGG_CELLS_WIDTH, 
+                             height: this.EGG_CELLS_HEIGHT }
     ];
 
-    this.goldCoinCells = [
-       { left: 104, top: 3, width: this.COIN_CELLS_WIDTH, 
-                             height: this.COIN_CELLS_HEIGHT }
+    this.egg2Cells = [
+       { left: 104, top: 3, width: this.EGG_CELLS_WIDTH, 
+                             height: this.EGG_CELLS_HEIGHT }
     ];
+
+    this.egg3Cells = [
+      { left: 66, top: 4, width: this.EGG3_CELLS_WIDTH, 
+                             height: this.EGG_CELLS_HEIGHT }
+    ];
+
+    this.egg4Cells = [
+      { left: 341,   top: 10, width: this.EGG4_CELLS_WIDTH,
+                             height: this.EGG4_CELLS_HEIGHT }
+   ];
+
+    this.egg5Cells = [
+      { left: 388,   top: 9, width: this.EGG5_CELLS_WIDTH,
+                              height: this.EGG5_CELLS_HEIGHT }
+   ];
 
    this.gearCells = [ //This is the location of the gear sprite on the sprite sheet
       { left: 0,   top: 0, width: this.GEAR_CELLS_WIDTH,
@@ -187,6 +218,57 @@ var SnailBait = function () {
          width: 29, height: this.IZZY_CELLS_HEIGHT },
    ],
 
+   this.izzyCellsIdle = [
+      { left: 6, top: 5051,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
+      
+      { left: 55, top: 5051,
+         width: 19, height: this.IZZY_CELLS_HEIGHT },
+
+      { left: 102, top: 5051,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
+      
+      { left: 6, top: 5051,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
+
+      { left: 149, top: 5051,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
+   ],
+
+   this.izzyCellsJump = [
+      { left: 5, top: 5098,
+         width: 26, height: this.IZZY_CELLS_HEIGHT },
+      
+         { left: 5, top: 5098,
+            width: 26, height: this.IZZY_CELLS_HEIGHT },
+
+            { left: 5, top: 5098,
+               width: 26, height: this.IZZY_CELLS_HEIGHT },
+
+               { left: 5, top: 5098,
+                  width: 26, height: this.IZZY_CELLS_HEIGHT },
+
+                  { left: 5, top: 5098,
+                     width: 26, height: this.IZZY_CELLS_HEIGHT },
+   ],
+
+   this.izzyCellsLanding = [
+      { left: 146, top: 5098,
+         width: 32, height: this.IZZY_CELLS_HEIGHT },
+
+         { left: 146, top: 5098,
+            width: 32, height: this.IZZY_CELLS_HEIGHT },
+
+            { left: 146, top: 5098,
+               width: 32, height: this.IZZY_CELLS_HEIGHT },
+
+               { left: 146, top: 5098,
+                  width: 32, height: this.IZZY_CELLS_HEIGHT },
+
+                  { left: 146, top: 5098,
+                     width: 32, height: this.IZZY_CELLS_HEIGHT },
+   ],
+
    this.mushroomCells = [
       { left: 162, top: 3, width: this.MUSHROOM_CELLS_WIDTH,
                              height: this.MUSHROOM_CELLS_HEIGHT }
@@ -202,55 +284,43 @@ var SnailBait = function () {
                              height: this.TREE_CELLS_HEIGHT }
    ];
 
-   this.egg4Cells = [
-      { left: 341,   top: 10, width: this.EGG4_CELLS_WIDTH,
-                             height: this.EGG4_CELLS_HEIGHT }
+   this.dinoCells = [
+      { left: 2500, top: 3694, width: this.DINO_CELLS_WIDTH,
+                             height: this.DINO_CELLS_HEIGHT }
    ];
 
-   this.egg5Cells = [
-      { left: 388,   top: 9, width: this.EGG5_CELLS_WIDTH,
-                             height: this.EGG5_CELLS_HEIGHT }
+   this.leafCells = [
+      { left: 438, top: 13, width: this.LEAF_CELLS_WIDTH,
+                           height: this.LEAF_CELLS_HEIGHT }
    ];
 
    // Sprite data.......................................................
 
-   this.coinData = [ //Can this be split up into blue and gold coins? -Abby
+   this.egg1Data = [
        { left: 270,  
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 489,  
-          top: this.TRACK_3_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 620,  
-          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 833,  
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 1050, 
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 1450, 
-          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 1670, 
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 1870, 
-          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 1930, 
-          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 2200, 
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 2320, 
-          top: this.TRACK_2_BASELINE - this.COIN_CELLS_HEIGHT }, 
-
-       { left: 2360, 
-          top: this.TRACK_1_BASELINE - this.COIN_CELLS_HEIGHT }, 
+          top: this.TRACK_2_BASELINE - this.EGG_CELLS_HEIGHT }, 
     ];  
+
+    this.egg2Data = [
+      { left: 1050, 
+         top: this.TRACK_2_BASELINE - this.EGG_CELLS_HEIGHT }, 
+   ];  
+
+   this.egg3Data = [
+      { left: 1450, 
+         top: this.TRACK_1_BASELINE - this.EGG_CELLS_HEIGHT }, 
+   ];  
+
+   this.egg4Data = [
+      { left: 1260,
+         top: this.TRACK_2_BASELINE - 2.8*this.EGG4_CELLS_HEIGHT },
+   ];
+
+
+   this.egg5Data = [
+      { left: 2600,
+         top: this.TRACK_3_BASELINE - -1.0*this.EGG5_CELLS_HEIGHT },
+   ];
 
    // Platforms.........................................................
 
@@ -433,27 +503,30 @@ this.platformData = [
           top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
    ];
 
-   this.egg4Data = [
-      { left: 1260,
-         top: this.TRACK_2_BASELINE - 2.8*this.EGG4_CELLS_HEIGHT },
+   this.dinoData = [
+      { left: 50, 
+         top: this.TRACK_1_BASELINE - 1.5*this.DINO_CELLS_HEIGHT },
    ];
 
-
-   this.egg5Data = [
-      { left: 2600,
-         top: this.TRACK_3_BASELINE - -1.0*this.EGG5_CELLS_HEIGHT },
+   this.leafData = [
+      { left: 1650, 
+         top: this.TRACK_1_BASELINE - 3.1*this.LEAF_CELLS_HEIGHT }, 
    ];
 
    // Sprites...........................................................
   
-   this.coins        = [];
    this.platforms    = [];
    this.gears        = []; //This creates the array that contains the gears
    this.mushrooms    = [];
    this.bushes       = [];
    this.trees        = [];
+   this.egg1s        = [];
+   this.egg2s        = [];
+   this.egg3s        = [];
    this.egg4s        = [];
    this.egg5s        = [];
+   this.dinos        = [];
+   this.leafs        = [];
 
    this.sprites = []; // For convenience, contains all of the sprites  
                       // from the preceding arrays
@@ -516,7 +589,6 @@ this.platformData = [
          }
       }      
     };
-
 
 
    // Pacing on platforms...............................................
@@ -613,14 +685,18 @@ this.platformData = [
 SnailBait.prototype = {
    createSprites: function () {
       this.createPlatformSprites();
-      this.createCoinSprites();
       this.createIzzySprite(); 
       this.createGearSprites(); //Creates gears
       this.createMushroomSprites();
       this.createBushSprites();
       this.createTreeSprites();
+      this.createEgg1Sprite();
+      this.createEgg2Sprite();
+      this.createEgg3Sprite();
       this.createEgg4Sprite();
       this.createEgg5Sprite();
+      this.createDinoSprite();
+      this.createLeafSprite();
 
       this.initializeSprites();
 
@@ -633,10 +709,6 @@ SnailBait.prototype = {
       for (var i=0; i < this.platforms.length; ++i) {
          this.sprites.push(this.platforms[i]);
       }
-
-      for (var i=0; i < this.coins.length; ++i) {
-          this.sprites.push(this.coins[i]);
-       }
 
       for (var i=0; i < this.gears.length; ++i) { //This adds the gear sprites to the master list of sprites
          this.sprites.push(this.gears[i]);
@@ -654,6 +726,18 @@ SnailBait.prototype = {
          this.sprites.push(this.trees[i]);
       }
 
+      for (var i=0; i < this.egg1s.length; ++i) {
+         this.sprites.push(this.egg1s[i]);
+      }
+
+      for (var i=0; i < this.egg2s.length; ++i) {
+         this.sprites.push(this.egg2s[i]);
+      }
+
+      for (var i=0; i < this.egg3s.length; ++i) {
+         this.sprites.push(this.egg3s[i]);
+      }
+
       
       for (var i=0; i < this.egg4s.length; ++i) {
          this.sprites.push(this.egg4s[i]);
@@ -661,6 +745,14 @@ SnailBait.prototype = {
 
       for (var i=0; i < this.egg5s.length; ++i) {
          this.sprites.push(this.egg5s[i]);
+      }
+
+      for (var i=0; i < this.dinos.length; ++i) {
+         this.sprites.push(this.dinos[i]);
+      }
+
+      for (var i=0; i < this.leafs.length; ++i) {
+         this.sprites.push(this.leafs[i]);
       }
 
       this.sprites.push(this.izzy);
@@ -682,16 +774,27 @@ SnailBait.prototype = {
          }
       }
    },
+
+   setTimeRate: function (rate) {
+      this.timeRate = rate;
+
+      this.timeSystem.setTransducer( function (now) {
+         return now * snailBait.timeRate;
+      });      
+   },
    
    initializeSprites: function() {
-      this.positionSprites(this.coins,     this.coinData);
       this.positionSprites(this.gears, this.gearData); //This spawns the gear sprites in the right spots
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
       this.positionSprites(this.trees, this.treeData);
+      this.positionSprites(this.egg1s, this.egg1Data);
+      this.positionSprites(this.egg2s, this.egg2Data);
+      this.positionSprites(this.egg3s, this.egg3Data);
       this.positionSprites(this.egg4s, this.egg4Data);
       this.positionSprites(this.egg5s, this.egg5Data);
-
+      this.positionSprites(this.dinos, this.dinoData);
+      this.positionSprites(this.leafs, this.leafData);
    },
 
    createMushroomSprites: function () {
@@ -739,6 +842,54 @@ SnailBait.prototype = {
       }
    },
 
+   createEgg1Sprite: function () {
+      var egg1;
+  
+      for (var i = 0; i < this.egg1Data.length; ++i) {
+           egg1 = new Sprite('egg1', 
+                             new SpriteSheetArtist(this.spritesheet,
+                                                   this.egg1Cells));
+        
+         egg1.width = this.EGG_CELLS_WIDTH;
+         egg1.height = this.EGG_CELLS_HEIGHT;
+         egg1.value = 50;
+
+         this.egg1s.push(egg1);
+      }
+   },
+
+   createEgg2Sprite: function () {
+     var egg2;
+ 
+     for (var i = 0; i < this.egg2Data.length; ++i) {
+          egg2 = new Sprite('egg2', 
+                            new SpriteSheetArtist(this.spritesheet,
+                                                  this.egg2Cells));
+       
+        egg2.width = this.EGG_CELLS_WIDTH;
+        egg2.height = this.EGG_CELLS_HEIGHT;
+        egg2.value = 50;
+
+        this.egg2s.push(egg2);
+      }
+   },
+
+  createEgg3Sprite: function () {
+     var egg3;
+ 
+     for (var i = 0; i < this.egg3Data.length; ++i) {
+          egg3 = new Sprite('egg3', 
+                            new SpriteSheetArtist(this.spritesheet,
+                                                  this.egg3Cells));
+       
+        egg3.width = this.EGG3_CELLS_WIDTH;
+        egg3.height = this.EGG_CELLS_HEIGHT;
+        egg3.value = 50;
+
+        this.egg3s.push(egg3);
+      }
+   },
+
    createEgg4Sprite: function () {
       var egg4;
 
@@ -749,6 +900,7 @@ SnailBait.prototype = {
 
          egg4.width = this.EGG4_CELLS_WIDTH; 
          egg4.height = this.EGG4_CELLS_HEIGHT;
+         egg4.value = 50;
 
          this.egg4s.push(egg4);
       }
@@ -764,33 +916,41 @@ SnailBait.prototype = {
 
          egg5.width = this.EGG5_CELLS_WIDTH; 
          egg5.height = this.EGG5_CELLS_HEIGHT;
+         egg5.value = 50;
 
          this.egg5s.push(egg5);
       }
    },
-   
-   createCoinSprites: function () {
-       var coin;
-   
-       for (var i = 0; i < this.coinData.length; ++i) {
-          if (i % 2 === 0) {
-             coin = new Sprite('coin', 
-                           new SpriteSheetArtist(this.spritesheet,
-                                                 this.goldCoinCells));
-          }
-          else {
-             coin = new Sprite('coin', 
-                           new SpriteSheetArtist(this.spritesheet,
-                                                 this.blueCoinCells));
-          }
-         
-          coin.width = this.COIN_CELLS_WIDTH;
-          coin.height = this.COIN_CELLS_HEIGHT;
-          coin.value = 50;
 
-          this.coins.push(coin);
-       }
-    },
+   createDinoSprite: function () {
+      var dino;
+
+      for (var i = 0; i < this.dinoData.length; ++i) {
+         dino = new Sprite('dino',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.dinoCells));
+
+         dino.width = this.DINO_CELLS_WIDTH; 
+         dino.height = this.DINO_CELLS_HEIGHT;
+
+         this.dinos.push(dino);
+      }
+   },
+
+   createLeafSprite: function () {
+      var leaf;
+
+      for (var i = 0; i < this.leafData.length; ++i) {
+         leaf = new Sprite('leaf',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.leafCells));
+
+         leaf.width = this.LEAF_CELLS_WIDTH; 
+         leaf.height = this.LEAF_CELLS_HEIGHT;
+
+         this.leafs.push(leaf);
+      }
+   },
 
    createPlatformSprites: function () {
       var sprite, pd;  // Sprite, Platform data
@@ -1006,7 +1166,7 @@ SnailBait.prototype = {
    },
 
    calculateFps: function (now) {
-      var fps = 1 / (now - this.lastAnimationFrameTime) * 1000;
+      var fps = 1 / (now - this.lastAnimationFrameTime) * 1000 * this.timeRate;
 
       if (now - this.lastFpsUpdateTime > 1000) {
          this.lastFpsUpdateTime = now;
@@ -1053,14 +1213,28 @@ SnailBait.prototype = {
 
    turnLeft: function () { //Allows movement to left
       this.bgVelocity = -this.BACKGROUND_VELOCITY;
-      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE;
+      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE = 10;
       this.izzy.artist.cells = this.izzyCellsLeft;
    },
 
-   turnRight: function () { //Allows movement to right
-      this.bgVelocity = this.BACKGROUND_VELOCITY;
-      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE;
+   turnRight: function () { //Allows movement to Right
+      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE = 10;
       this.izzy.artist.cells = this.izzyCellsRight;
+      this.bgVelocity = this.BACKGROUND_VELOCITY;
+   },
+
+   idleStance: function () { //Izzy Stops Running
+      this.izzy.artist.cells = this.izzyCellsIdle;
+      this.bgVelocity = 0;
+      this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE = 5;
+   },
+
+   upwardsLeap: function (){ //Upwards Movement
+      this.izzy.artist.cells = this.izzyCellsJump;
+   },
+   
+   downwardsFall: function (){
+      this.izzy.artist.cells = this.izzyCellsLanding;
    },
 
    fadeInElements: function () {
@@ -1119,6 +1293,9 @@ SnailBait.prototype = {
    // Animation.........................................................
 
    animate: function (now) { 
+
+      now = snailBait.timeSystem.calculateGameTime();
+
       if (snailBait.paused) {
          setTimeout( function () {
             requestNextAnimationFrame(snailBait.animate);
@@ -1260,6 +1437,8 @@ SnailBait.prototype = {
    startGame: function () {
       this.revealGame();
       this.revealInitialToast();
+      this.timeSystem.start();
+
       requestNextAnimationFrame(this.animate);
    }
 };
@@ -1269,17 +1448,39 @@ SnailBait.prototype = {
 window.onkeydown = function (e) { //Defines key bindings
    var key = e.keyCode; //Can the backup keys be changed to WASD? -Abby
 
-   if (key === 68 || key === 37) { // 'd' or left arrow
+   if (key === 65 || key === 37) { // 'a' or left arrow
       snailBait.turnLeft();
+      snailBait.setTimeRate(1.0);
    }
-   else if (key === 75 || key === 39) { // 'k' or right arrow
+   else if (key === 68 || key === 39) { // 'd' or right arrow
       snailBait.turnRight();
+      snailBait.setTimeRate(1.0);
    }
-   else if (key === 80) { // 'p'
+   else if (key === 80) { // 'p' pause the game 
       snailBait.togglePaused();
     }
-   else if (key === 74 || key === 32) { // 'j' or spacebar for jump
+   else if (key === 74 || key === 32 || key === 87 || key === 38) { // 'j', spacebar, 'w', or up arrow to jump
        snailBait.jumpBehavior.startJump(snailBait.izzy);
+   }
+
+   else if (key === 69) { // 'e' to slow down time
+      snailBait.setTimeRate(0.1);
+   }
+};
+
+window.onkeyup = function (e){
+   var key = e.keyCode;
+
+   if (key === 65 || key === 37) { // 'a' or left arrow
+      snailBait.idleStance();
+   }
+
+   else if (key === 68 || key === 39) { // 'd' or right arrow
+      snailBait.idleStance();
+   }
+
+   else if (key === 69) { // 'e' to slow down time
+      snailBait.setTimeRate(1.0);
    }
 };
 

@@ -337,9 +337,11 @@ JumpBehavior.prototype = {
 
         if (this.ascendTimer.isRunning()) {
             this.ascend(sprite);
+            snailBait.upwardsLeap();
         }
         else if (this.descendTimer.isRunning()) {
             this.descend(sprite);
+            snailBait.downwardsFall();
         }
         else {
             this.finishJump(sprite);
@@ -354,7 +356,7 @@ JumpBehavior.prototype = {
         this.jumping = true;
         this.jumpApex = sprite.top - this.height;
         this.jumpStart = sprite.top;
-        this.ascendTimer.start();
+        this.ascendTimer.start(snailBait.timeSystem.calculateGameTime());
     },
 
     isJumping: function () {
