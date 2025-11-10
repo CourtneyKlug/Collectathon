@@ -284,9 +284,14 @@ var SnailBait = function () {
                              height: this.TREE_CELLS_HEIGHT }
    ];
 
-   this.dinoCells = [
-      { left: 2500, top: 3694, width: this.DINO_CELLS_WIDTH,
-                             height: this.DINO_CELLS_HEIGHT }
+   this.dinoHappyCells = [
+      { left: 3930, top: 4647, width: 3000,
+                             height: 3000 }
+   ];
+
+   this.dinoSadCells = [
+      { left: 3206, top: 4647, width: 3000,
+                             height: 3000 }
    ];
 
    this.leafCells = [
@@ -504,7 +509,7 @@ this.platformData = [
    ];
 
    this.dinoData = [
-      { left: 50, 
+      { left: 235, 
          top: this.TRACK_1_BASELINE - 1.5*this.DINO_CELLS_HEIGHT },
    ];
 
@@ -928,7 +933,7 @@ SnailBait.prototype = {
       for (var i = 0; i < this.dinoData.length; ++i) {
          dino = new Sprite('dino',
                           new SpriteSheetArtist(this.spritesheet, 
-                                                this.dinoCells));
+                                                this.dinoSadCells));
 
          dino.width = this.DINO_CELLS_WIDTH; 
          dino.height = this.DINO_CELLS_HEIGHT;
