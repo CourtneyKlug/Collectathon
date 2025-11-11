@@ -146,7 +146,7 @@ var SnailBait = function () {
    this.EGG5_CELLS_HEIGHT = 50;
    this.EGG5_CELLS_WIDTH = 40;
 
-   this.DINO_CELLS_HEIGHT = 50;
+   this.DINO_CELLS_HEIGHT = 70;
    this.DINO_CELLS_WIDTH = 50;
 
    this.LEAF_CELLS_HEIGHT = 50;
@@ -302,17 +302,17 @@ var SnailBait = function () {
    // Sprite data.......................................................
 
    this.egg1Data = [
-       { left: 270,  
+       { left: 480,  
           top: this.TRACK_2_BASELINE - this.EGG_CELLS_HEIGHT }, 
     ];  
 
     this.egg2Data = [
-      { left: 1050, 
-         top: this.TRACK_2_BASELINE - this.EGG_CELLS_HEIGHT }, 
+      { left: 1920, 
+         top: this.TRACK_1_BASELINE - this.EGG_CELLS_HEIGHT }, 
    ];  
 
    this.egg3Data = [
-      { left: 1450, 
+      { left: 4660, 
          top: this.TRACK_1_BASELINE - this.EGG_CELLS_HEIGHT }, 
    ];  
 
@@ -341,7 +341,17 @@ this.platformData = [
          pulsate:   false,
       },
 
-      {  left:      250,
+      {
+         left:      242,
+         width:     388,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image2',
+         opacity:   1.0,
+         track:     1,
+         pulsate:   false,
+      },
+
+      {  left:      450,
          width:     100,
          height:    this.PLATFORM_HEIGHT,
          fillStyle: 'image2',
@@ -350,7 +360,7 @@ this.platformData = [
          pulsate:   false,
       },
 
-      {  left:      400,
+      {  left:      250,
          width:     125,
          height:    this.PLATFORM_HEIGHT,
          fillStyle: 'image2',
@@ -370,8 +380,8 @@ this.platformData = [
 
       // Screen 2.......................................................
                
-      {  left:      810,
-         width:     100,
+      {  left:      850,
+         width:     330,
          height:    this.PLATFORM_HEIGHT,
          fillStyle: 'image2',
          opacity:   1.0,
@@ -379,19 +389,10 @@ this.platformData = [
          pulsate:   false
       },
 
-      {  left:      1025,
-         width:     100,
+      {  left:      1230,
+         width:     525,
          height:    this.PLATFORM_HEIGHT,
          fillStyle: 'image2',
-         opacity:   1.0,
-         track:     2,
-         pulsate:   false
-      },
-
-      {  left:      1200,
-         width:     125,
-         height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'image',
          opacity:   1.0,
          track:     3,
          pulsate:   false
@@ -420,7 +421,7 @@ this.platformData = [
       {  left:      1800,
          width:     250,
          height:    this.PLATFORM_HEIGHT,
-         fillStyle: 'image2',
+         fillStyle: 'image',
          opacity:   1.0,
          track:     1,
          pulsate:   false
@@ -462,22 +463,81 @@ this.platformData = [
          track:     2,
          snail:     true
       },
+
+      // Screen 5.......................................................
+
+      {  left:      2800,
+         width:     200,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image2',
+         opacity:   1.0,
+         track:     2,
+         snail:     true
+      },
+
+      {  left:      3100,
+         width:     200,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image2',
+         opacity:   1.0,
+         track:     2,
+         snail:     true
+      },
+
+      {  left:      3700,
+         width:     1000,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image',
+         opacity:   1.0,
+         track:     1,
+         snail:     true
+      },
+
+      {  left:      3700,
+         width:     700,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image2',
+         opacity:   1.0,
+         track:     2,
+         snail:     true
+      },
+
+      {  left:      3400,
+         width:     1000,
+         height:    this.PLATFORM_HEIGHT,
+         fillStyle: 'image2',
+         opacity:   1.0,
+         track:     3,
+         snail:     true
+      },
    ];
 
    this.gearData = [ //These are the locations of the gears on the game map
-      { left: 70,  
-         top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
+      { left: 296,  
+         top: this.TRACK_1_BASELINE - 7.7*this.GEAR_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
 
       { left: 880,  
          top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
 
-      { left: 1100, 
-         top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT }, 
+      { left: 1500, 
+         top: this.TRACK_2_BASELINE - 4.7*this.GEAR_CELLS_HEIGHT }, 
 
       { left: 1475, 
          top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
 
       { left: 2400, 
+         top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
+
+      { left: 4370, 
+         top: this.TRACK_3_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
+
+      { left: 3700, 
+         top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
+
+      { left: 3188, 
+         top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
+
+      { left: 3700, 
          top: this.TRACK_1_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
    ];
 
@@ -493,10 +553,10 @@ this.platformData = [
    ];
 
    this.bushData = [
-      { left: 300, 
-          top: this.TRACK_1_BASELINE - 2.7*this.BUSH_CELLS_HEIGHT },
+      { left: 330, 
+          top: this.TRACK_1_BASELINE - 4.7*this.BUSH_CELLS_HEIGHT },
 
-      { left: 400, 
+      { left: 250, 
           top: this.TRACK_1_BASELINE - 4.7*this.BUSH_CELLS_HEIGHT },
 
       { left: 1240, 
@@ -505,7 +565,31 @@ this.platformData = [
 
    this.treeData = [
       { left: 107, 
-          top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 770, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 1475, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 1660, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 1660, 
+         top: this.TRACK_1_BASELINE - 0.7*this.TREE_CELLS_HEIGHT },
+      { left: 1660, 
+         top: this.TRACK_2_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 1910, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 2135, 
+         top: this.TRACK_3_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 2135, 
+         top: this.TRACK_2_BASELINE - 0.3*this.TREE_CELLS_HEIGHT },
+      { left: 2135, 
+         top: this.TRACK_2_BASELINE - -0.5*this.TREE_CELLS_HEIGHT },
+      { left: 2135, 
+         top: this.TRACK_2_BASELINE - -1.3*this.TREE_CELLS_HEIGHT },
+      { left: 2346, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
+      { left: 4242, 
+         top: this.TRACK_1_BASELINE - -0.1*this.TREE_CELLS_HEIGHT },
    ];
 
    this.dinoData = [
@@ -711,6 +795,10 @@ SnailBait.prototype = {
    },
 
    addSpritesToSpriteArray: function () {
+      for (var i=0; i < this.dinos.length; ++i) {
+         this.sprites.push(this.dinos[i]);
+      }
+
       for (var i=0; i < this.platforms.length; ++i) {
          this.sprites.push(this.platforms[i]);
       }
@@ -750,10 +838,6 @@ SnailBait.prototype = {
 
       for (var i=0; i < this.egg5s.length; ++i) {
          this.sprites.push(this.egg5s[i]);
-      }
-
-      for (var i=0; i < this.dinos.length; ++i) {
-         this.sprites.push(this.dinos[i]);
       }
 
       for (var i=0; i < this.leafs.length; ++i) {
