@@ -461,7 +461,6 @@ this.platformData = [
          fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
-         snail:     true
       },
 
       // Screen 5.......................................................
@@ -472,7 +471,6 @@ this.platformData = [
          fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
-         snail:     true
       },
 
       {  left:      3100,
@@ -481,7 +479,6 @@ this.platformData = [
          fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
-         snail:     true
       },
 
       {  left:      3700,
@@ -490,7 +487,6 @@ this.platformData = [
          fillStyle: 'image',
          opacity:   1.0,
          track:     1,
-         snail:     true
       },
 
       {  left:      3700,
@@ -499,7 +495,6 @@ this.platformData = [
          fillStyle: 'image2',
          opacity:   1.0,
          track:     2,
-         snail:     true
       },
 
       {  left:      3400,
@@ -508,7 +503,6 @@ this.platformData = [
          fillStyle: 'image2',
          opacity:   1.0,
          track:     3,
-         snail:     true
       },
    ];
 
@@ -543,12 +537,24 @@ this.platformData = [
 
    this.mushroomData = [
       { left: 800, 
-          top: this.TRACK_2_BASELINE - -1.5*this.MUSHROOM_CELLS_HEIGHT },
+         top: this.TRACK_2_BASELINE - -1.5*this.MUSHROOM_CELLS_HEIGHT },
+      
+      { left: 400, 
+         top: this.TRACK_2_BASELINE - -1.5*this.MUSHROOM_CELLS_HEIGHT },
       
       { left: 10, 
-          top: this.TRACK_1_BASELINE - 1.0*this.MUSHROOM_CELLS_HEIGHT },
+         top: this.TRACK_1_BASELINE - 1.0*this.MUSHROOM_CELLS_HEIGHT },
 
       { left: 2125, 
+         top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
+   
+      { left: 3525, 
+         top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
+      { left: 3725, 
+         top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
+      { left: 3925, 
+         top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
+      { left: 4125, 
          top: this.TRACK_1_BASELINE - 6.0*this.MUSHROOM_CELLS_HEIGHT },
    ];
 
@@ -561,6 +567,34 @@ this.platformData = [
 
       { left: 1240, 
           top: this.TRACK_2_BASELINE - 2.7*this.BUSH_CELLS_HEIGHT },
+      { left: 1990, 
+          top: this.TRACK_1_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 1810, 
+          top: this.TRACK_1_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2810, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2830, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2850, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2870, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2890, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2910, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2930, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 2950, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+      { left: 4325, 
+         top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+         { left: 4125, 
+            top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+            { left: 3925, 
+               top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
+               { left: 3725, 
+                  top: this.TRACK_2_BASELINE - 0.7*this.BUSH_CELLS_HEIGHT },
    ];
 
    this.treeData = [
