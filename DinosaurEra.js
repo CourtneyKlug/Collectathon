@@ -31,7 +31,7 @@ var SnailBait = function () {
 
    // Background width and height.........................................
 
-   this.BACKGROUND_WIDTH = 1102;
+   this.BACKGROUND_WIDTH = 890;
    this.BACKGROUND_HEIGHT = 400;
 
    // Velocities........................................................
