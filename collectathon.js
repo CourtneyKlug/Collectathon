@@ -75,6 +75,10 @@ var SnailBait = function () {
    
    this.spritesheet = new Image(),
 
+   // Sounds............................................................
+
+   this.jumpSound = new Audio('sounds/jump.mp3'),
+
    // Time..............................................................
    
    this.lastAnimationFrameTime = 0,
@@ -1466,6 +1470,7 @@ window.onkeydown = function (e) { //Defines key bindings
     }
    else if (key === 74 || key === 32 || key === 87 || key === 38) { // 'j', spacebar, 'w', or up arrow to jump
        snailBait.jumpBehavior.startJump(snailBait.izzy);
+       snailBait.jumpSound.play();
    }
 
    else if (key === 69) { // 'e' to slow down time
