@@ -776,8 +776,8 @@ this.platformData = [
          o = otherSprite.calculateCollisionRectangle();
          //console.log("Same column");
          
-            return o.left < s.right &&
-                   o.right > s.left &&
+            return (o.left < s.right ||
+                   o.right > s.left) &&
                 sprite !== otherSprite &&
                 sprite.visible && otherSprite.visible;
          }
@@ -819,8 +819,16 @@ this.platformData = [
       },
 
       processCollision: function (sprite, otherSprite) {
-         if ('gear' === otherSprite.type){ //Add cases here for other collectables - Abby
-            //console.log(sprite.type + " collided with " + otherSprite.type);
+         if ('gear' === otherSprite.type || 
+            'egg1' === otherSprite.type || 
+            'egg2' === otherSprite.type ||
+            'egg3' === otherSprite.type ||
+            'egg4' === otherSprite.type ||
+            'egg5' === otherSprite.type ||
+            'leaf' === otherSprite.type){ //Add cases here for each collectable - Abby
+            
+            //console.log(sprite.type + " collided with " + otherSprite.type); //For testing purposes -Abby
+
             this.processAssetCollision(otherSprite);
          }
       },
@@ -1018,6 +1026,15 @@ SnailBait.prototype = {
          egg1.height = this.EGG_CELLS_HEIGHT;
          egg1.value = 50;
 
+         egg1.collisionMargin = {
+           left: egg1.width/8 - 2,
+           top: egg1.height/4 - 5, 
+           right: egg1.width/8 - 5,
+           bottom: egg1.height/4,
+         };
+
+         //egg1.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
+
          this.egg1s.push(egg1);
       }
    },
@@ -1033,6 +1050,15 @@ SnailBait.prototype = {
         egg2.width = this.EGG_CELLS_WIDTH;
         egg2.height = this.EGG_CELLS_HEIGHT;
         egg2.value = 50;
+
+        egg2.collisionMargin = {
+           left: egg2.width/8 - 2,
+           top: egg2.height/4 - 5, 
+           right: egg2.width/8 - 2,
+           bottom: egg2.height/4,
+         };
+
+        //egg2.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
         this.egg2s.push(egg2);
       }
@@ -1050,6 +1076,15 @@ SnailBait.prototype = {
         egg3.height = this.EGG_CELLS_HEIGHT;
         egg3.value = 50;
 
+        egg3.collisionMargin = {
+           left: egg3.width/8 - 2,
+           top: egg3.height/4 - 5, 
+           right: egg3.width/8 - 2,
+           bottom: egg3.height/4,
+         };
+
+        //egg3.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
+
         this.egg3s.push(egg3);
       }
    },
@@ -1066,6 +1101,15 @@ SnailBait.prototype = {
          egg4.height = this.EGG4_CELLS_HEIGHT;
          egg4.value = 50;
 
+         egg4.collisionMargin = {
+           left: egg4.width/8 - 8,
+           top: egg4.height/4 - 10, 
+           right: egg4.width/8 - 2,
+           bottom: egg4.height/4,
+         };
+
+         //egg4.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
+
          this.egg4s.push(egg4);
       }
    },
@@ -1081,6 +1125,15 @@ SnailBait.prototype = {
          egg5.width = this.EGG5_CELLS_WIDTH; 
          egg5.height = this.EGG5_CELLS_HEIGHT;
          egg5.value = 50;
+
+         egg5.collisionMargin = {
+           left: egg5.width/8 - 8,
+           top: egg5.height/4 - 12, 
+           right: egg5.width/8 - 2,
+           bottom: egg5.height/4 - 12,
+         };
+
+         //egg5.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.egg5s.push(egg5);
       }
@@ -1111,6 +1164,15 @@ SnailBait.prototype = {
 
          leaf.width = this.LEAF_CELLS_WIDTH; 
          leaf.height = this.LEAF_CELLS_HEIGHT;
+
+         leaf.collisionMargin = {
+           left: leaf.width/8 - 10,
+           top: leaf.height/4 - 12, 
+           right: leaf.width/8 - 4,
+           bottom: leaf.height/4 - 17,
+         };
+
+         //leaf.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.leafs.push(leaf);
       }
@@ -1155,13 +1217,13 @@ SnailBait.prototype = {
        this.izzy.left = IZZY_LEFT;
        this.izzy.top = this.calculatePlatformTop(this.izzy.track) -
                             IZZY_HEIGHT;
-       this.izzy.width = 55;
+       this.izzy.width = this.IZZY_CELLS_WIDTH;
        this.izzy.height = IZZY_HEIGHT;
 
        this.izzy.collisionMargin = {
-           left: 55/8 - 5,
+           left: this.izzy.width/8 - 5,
            top: IZZY_HEIGHT/4 - 5, 
-           right: 55/8,
+           right: this.izzy.width/8,
            bottom: IZZY_HEIGHT/4 - 5,
        };
 
