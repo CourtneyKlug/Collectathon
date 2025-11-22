@@ -691,7 +691,7 @@ this.platformData = [
     
    // ------------------------Sprite behaviors-------------------------
 
-   // Pacing on platforms...............................................
+   // Running..........................................................
 
    this.runBehavior = {
       lastAdvanceTime: 0,
@@ -808,7 +808,7 @@ this.platformData = [
       },
 
       processAssetCollision: function (sprite){ //This points to the other sprite, not Izzy -Abby
-/*          if (sprite.type == 'gear'){
+/*          if (sprite.type == 'gear'){ //For testing purposes -Abby
             console.log("Collected gear");
          }
          else{
@@ -816,6 +816,7 @@ this.platformData = [
          } */
          
          sprite.visible = false; //Makes sprite disappear from view -Abby
+         //Add code here to increase count of collected assets
       },
 
       processCollision: function (sprite, otherSprite) {
