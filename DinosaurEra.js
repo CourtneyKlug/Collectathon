@@ -771,12 +771,17 @@ this.platformData = [
       isCandidateForCollision: function (sprite, otherSprite) { //Checks if sprites are close to each other
          var s, o;
          
+         if(otherSprite.type !== 'mushroom' && otherSprite.type !== 'bush'){ //Makes it so Izzy does not collide with mushrooms or bushes -Abby
          s = sprite.calculateCollisionRectangle(),
          o = otherSprite.calculateCollisionRectangle();
-         console.log("Same column");
+         //console.log("Same column");
          
-         return o.left < s.right &&
-                sprite !== otherSprite;
+            return o.left < s.right &&
+                   o.right > s.left &&
+                sprite !== otherSprite &&
+                sprite.visible && otherSprite.visible;
+         }
+
       },
 
       didCollide: function (sprite, otherSprite, context) { //Checks if sprites are actually overlapping
@@ -788,8 +793,11 @@ this.platformData = [
 
          context.beginPath();
          context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
-         console.log("Collision detected");
 
+/*          if(otherSprite.type == 'gear'){ //For use while checking collisions. Comment this out when done testing -Abby
+            console.log("Detected " + otherSprite.type);
+         } */
+         
          return context.isPointInPath(r.left,  r.top)       ||
                 context.isPointInPath(r.right, r.top)       ||
 
@@ -799,11 +807,41 @@ this.platformData = [
                 context.isPointInPath(r.right, r.bottom);
       },
 
+      processAssetCollision: function (sprite){ //This points to the other sprite, not Izzy -Abby
+/*          if (sprite.type == 'gear'){
+            console.log("Collected gear");
+         }
+         else{
+            console.log("Collected asset")
+         } */
+         
+         sprite.visible = false; //Makes sprite disappear from view -Abby
+      },
+
       processCollision: function (sprite, otherSprite) {
+         if ('gear' === otherSprite.type){ //Add cases here for other collectables - Abby
+            //console.log(sprite.type + " collided with " + otherSprite.type);
+            this.processAssetCollision(otherSprite);
+         }
       },
 
       execute: function (sprite, now, fps, context, 
                          lastAnimationFrameTime) {
+         var otherSprite; // other than Izzy
+
+         for (var i=0; i < snailBait.sprites.length; ++i) {
+            otherSprite = snailBait.sprites[i];
+
+/*              if (this.didCollide(sprite, otherSprite, context)) { 
+                  this.processCollision(sprite, otherSprite);
+               } */
+
+              if (this.isCandidateForCollision(sprite, otherSprite)) {
+               if (this.didCollide(sprite, otherSprite, context)) { 
+                  this.processCollision(sprite, otherSprite);
+               }
+            } 
+         }                 
       }      
    };
 };
@@ -1109,7 +1147,7 @@ SnailBait.prototype = {
        this.izzy = new Sprite('izzy',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.izzyCellsRight),
-           [this.runBehavior, this.fallBehavior, this.jumpBehavior ]); 
+           [this.runBehavior, this.fallBehavior, this.jumpBehavior, this.collideBehavior ]); 
 
        this.izzy.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
 
@@ -1117,13 +1155,17 @@ SnailBait.prototype = {
        this.izzy.left = IZZY_LEFT;
        this.izzy.top = this.calculatePlatformTop(this.izzy.track) -
                             IZZY_HEIGHT;
+       this.izzy.width = 55;
+       this.izzy.height = IZZY_HEIGHT;
 
        this.izzy.collisionMargin = {
-           left: 20,
-           top: 15, 
-           right: 15,
-           bottom: 20,
+           left: 55/8 - 5,
+           top: IZZY_HEIGHT/4 - 5, 
+           right: 55/8,
+           bottom: IZZY_HEIGHT/4 - 5,
        };
+
+       //this.izzy.showCollisionRectangle = true; //Makes collision rectangle visible. -Abby
 
        this.sprites.push(this.izzy);
    },
@@ -1143,6 +1185,15 @@ SnailBait.prototype = {
          gear.height = this.GEAR_CELLS_HEIGHT;
          //gear.velocityX = this.GEAR_PACE_VELOCITY; //Bobble velocity. Doesn't work yet -Abby
          gear.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
+
+         gear.collisionMargin = {
+           left: gear.width,
+           top: gear.height/4, 
+           right: gear.width,
+           bottom: gear.height/4,
+         };
+
+         //gear.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.gears.push(gear);
       }
