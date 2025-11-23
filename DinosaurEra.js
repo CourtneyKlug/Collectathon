@@ -86,6 +86,8 @@ var SnailBait = function () {
    // Sounds............................................................
 
    this.jumpSound = new Audio('sounds/jump.mp3'),
+   this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
+   this.eggCollectSound = new Audio('sounds/egg_collect.wav'),
 
    // Time..............................................................
    
@@ -1019,13 +1021,22 @@ this.platformData = [
       },
 
       processCollision: function (sprite, otherSprite) {
-         if ('gear' === otherSprite.type || 
-            'egg1' === otherSprite.type || 
+         if ('gear' === otherSprite.type){
+               snailBait.gearCollectSound.currentTime = 0;
+               snailBait.gearCollectSound.play();
+               this.processAssetCollision(otherSprite);
+         }
+
+         else if('egg1' === otherSprite.type || 
             'egg2' === otherSprite.type ||
             'egg3' === otherSprite.type ||
             'egg4' === otherSprite.type ||
-            'egg5' === otherSprite.type ||
-            'leaf' === otherSprite.type){ //Add cases here for each collectable - Abby
+            'egg5' === otherSprite.type){
+               snailBait.eggCollectSound.currentTime = 0;
+               snailBait.eggCollectSound.play();
+               this.processAssetCollision(otherSprite);
+         }
+         else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby
             
             //console.log(sprite.type + " collided with " + otherSprite.type); //For testing purposes -Abby
 
