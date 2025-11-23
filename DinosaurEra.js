@@ -29,10 +29,19 @@ var SnailBait = function () {
    this.PLATFORM_STROKE_WIDTH = 2,
    this.PLATFORM_STROKE_STYLE = 'rgb(0,0,0)',
 
+   this.GRAVITY_FORCE = 9.81; // m/s/s
+
    // Background width and height.........................................
 
    this.BACKGROUND_WIDTH = 890;
    this.BACKGROUND_HEIGHT = 400;
+
+   // Pixels and meters.................................................
+
+   this.CANVAS_WIDTH_IN_METERS = 13;  // Proportional to sprite sizes
+
+   this.PIXELS_PER_METER = this.canvas.width / 
+                           this.CANVAS_WIDTH_IN_METERS;
 
    // Velocities........................................................
 
@@ -112,7 +121,7 @@ var SnailBait = function () {
    
    this.backgroundOffset = this.STARTING_BACKGROUND_OFFSET,
    this.spriteOffset = this.STARTING_SPRITE_OFFSET;
-   this.jumpBehavior = new JumpBehavior();
+   //this.jumpBehavior = new JumpBehavior();
    
    //this.platformOffset = this.STARTING_PLATFORM_OFFSET,
 
@@ -756,12 +765,188 @@ this.platformData = [
       }
    };
 
-   this.fallBehavior = {         
+   /* this.fallBehavior = {         
       execute: function (sprite, now, fps, context, lastAnimationFrameTime) {
          if ( ! sprite.falling) {
 			 sprite.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
             if (! snailBait.platformUnderneath(sprite)) {
                sprite.runAnimationRate = 0;
+            }
+         }
+      }
+   }; */
+
+      // Jump..............................................................
+
+   this.jumpBehavior = {
+      pause: function (sprite, now) {
+         if (sprite.ascendTimer.isRunning()) {
+            sprite.ascendTimer.pause(now);
+         }
+         else if (sprite.descendTimer.isRunning()) {
+            sprite.descendTimer.pause(now);
+         }
+      },
+
+      unpause: function (sprite, now) {
+         if (sprite.ascendTimer.isRunning()) {
+            sprite.ascendTimer.unpause(now);
+         }         
+         else if (sprite.descendTimer.isRunning()) {
+            sprite.descendTimer.unpause(now);
+         }
+      },
+
+      isAscending: function (sprite) {
+         return sprite.ascendTimer.isRunning();
+      },
+
+      ascend: function (sprite, now) {
+         var elapsed = sprite.ascendTimer.getElapsedTime(now),
+             deltaY  = elapsed / (sprite.JUMP_DURATION/2) * sprite.JUMP_HEIGHT;
+
+         sprite.top = sprite.verticalLaunchPosition - deltaY; // Moving up
+      },
+
+      isDoneAscending: function (sprite, now) {
+         return sprite.ascendTimer.getElapsedTime(now) > 
+                sprite.JUMP_DURATION/2;
+      },
+
+      finishAscent: function (sprite, now) {
+         sprite.jumpApex = sprite.top;
+         sprite.ascendTimer.stop(now);
+         sprite.descendTimer.start(now);
+      },
+
+      isDescending: function (sprite) {
+         return sprite.descendTimer.isRunning();
+      },
+
+      descend: function (sprite, now) {
+         var elapsed = sprite.descendTimer.getElapsedTime(now),
+             deltaY  = elapsed / (sprite.JUMP_DURATION/2) * sprite.JUMP_HEIGHT;
+
+         sprite.top = sprite.jumpApex + deltaY; // Moving down
+      },
+
+      isDoneDescending: function (sprite, now) {
+         return sprite.descendTimer.getElapsedTime(now) > 
+                sprite.JUMP_DURATION/2;
+      },
+
+      finishDescent: function (sprite, now) {
+         sprite.stopJumping();
+         sprite.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
+
+         if (snailBait.platformUnderneath(sprite)) {
+            sprite.top = sprite.verticalLaunchPosition;
+         }
+         else {
+            sprite.fall(snailBait.GRAVITY_FORCE *
+               (sprite.descendTimer.getElapsedTime(now)/1000) *
+               snailBait.PIXELS_PER_METER);
+         }
+      },
+
+      execute: function (sprite, now, fps, context, 
+                         lastAnimationFrameTime) {
+         if ( ! sprite.jumping) {
+            return;
+         }
+
+         if (this.isAscending(sprite)) {
+            if ( ! this.isDoneAscending(sprite, now)) this.ascend(sprite, now);
+            else                                this.finishAscent(sprite, now);
+         }
+         else if (this.isDescending(sprite)) {
+            if ( ! this.isDoneDescending(sprite, now)) this.descend(sprite, now);
+            else                                 this.finishDescent(sprite, now);
+         }
+      }
+   };
+
+      // Izzy's fall behavior............................................
+
+   this.fallBehavior = {
+      pause: function (sprite, now) {
+         sprite.fallTimer.pause(now);
+      },
+
+      unpause: function (sprite, now) {
+         sprite.fallTimer.unpause(now);
+      },
+      
+      isOutOfPlay: function (sprite) {
+         return sprite.top > snailBait.canvas.height;
+      },
+
+      setSpriteVelocity: function (sprite, now) {
+         sprite.velocityY = 
+            sprite.initialVelocityY + snailBait.GRAVITY_FORCE *
+            (sprite.fallTimer.getElapsedTime(now)/1000) *
+            snailBait.PIXELS_PER_METER;
+      },
+
+      calculateVerticalDrop: function (sprite, now, 
+                                       lastAnimationFrameTime) {
+         return sprite.velocityY * (now - lastAnimationFrameTime) / 1000;
+      },
+
+      willFallBelowCurrentTrack: function (sprite, dropDistance) {
+         return sprite.top + sprite.height + dropDistance >
+                snailBait.calculatePlatformTop(sprite.track);
+      },
+
+      fallOnPlatform: function (sprite) {
+         sprite.stopFalling();
+         snailBait.putSpriteOnTrack(sprite, sprite.track);
+         //snailBait.playSound(snailBait.thudSound);
+      },
+
+      moveDown: function (sprite, now, lastAnimationFrameTime) {
+         var dropDistance;
+
+         this.setSpriteVelocity(sprite, now);
+
+         dropDistance = this.calculateVerticalDrop(
+                           sprite, now, lastAnimationFrameTime);
+
+         if ( ! this.willFallBelowCurrentTrack(sprite, dropDistance)) {
+            sprite.top += dropDistance; 
+         }
+         else { // will fall below current track
+            if (snailBait.platformUnderneath(sprite)) { // collision detection
+               this.fallOnPlatform(sprite);
+               sprite.stopFalling();
+            }
+            else {
+               sprite.track--;
+               sprite.top += dropDistance;
+            }
+         }
+      },         
+
+      execute: function (sprite, now, fps, context, 
+                         lastAnimationFrameTime) {
+         if (sprite.falling) {
+            if (! this.isOutOfPlay(sprite) && !sprite.exploding) {
+               this.moveDown(sprite, now, lastAnimationFrameTime);
+            }
+            else { // Out of play or exploding               
+               sprite.stopFalling();
+
+               if (this.isOutOfPlay(sprite)) {
+                  //snailBait.loseLife();
+                  //snailBait.playSound(snailBait.electricityFlowingSound);
+                  snailBait.runner.visible = false;
+               }
+            }
+         }
+         else { // Not falling
+            if ( ! sprite.jumping && 
+                 ! snailBait.platformUnderneath(sprite)) {
+               sprite.fall();
             }
          }
       }
@@ -794,7 +979,7 @@ this.platformData = [
          context.beginPath();
          context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
 
-/*          if(otherSprite.type == 'gear'){ //For use while checking collisions. Comment this out when done testing -Abby
+/*           if(otherSprite.type == 'platform'){ //For use while checking collisions. Comment this out when done testing -Abby
             console.log("Detected " + otherSprite.type);
          } */
          
@@ -819,6 +1004,20 @@ this.platformData = [
          //Add code here to increase count of collected assets
       },
 
+      proccessPlatformCollisionDuringJump: function (sprite, platform) {
+         var isDescending = sprite.descendTimer.isRunning();
+         
+         //console.log("Platform hit while jumping");
+         sprite.stopJumping();
+
+         if(isDescending){
+            snailBait.putSpriteOnTrack(sprite, platform.track);
+         }
+         else{
+            sprite.fall();
+         }
+      },
+
       processCollision: function (sprite, otherSprite) {
          if ('gear' === otherSprite.type || 
             'egg1' === otherSprite.type || 
@@ -831,6 +1030,14 @@ this.platformData = [
             //console.log(sprite.type + " collided with " + otherSprite.type); //For testing purposes -Abby
 
             this.processAssetCollision(otherSprite);
+         }
+
+/*          if('platform' === otherSprite.type){
+            console.log("Colliding with " + otherSprite.type);
+         } */
+
+         if(sprite.jumping && 'platform' === otherSprite.type){ //Checks if Izzy hits a platform while jumping
+            this.proccessPlatformCollisionDuringJump(sprite, otherSprite);
          }
       },
 
@@ -872,6 +1079,8 @@ SnailBait.prototype = {
       this.createLeafSprite();
 
       this.initializeSprites();
+
+      this.equipIzzy();
 
       // All sprites are also stored in a single array
 
@@ -1210,7 +1419,7 @@ SnailBait.prototype = {
        this.izzy = new Sprite('izzy',
                         new SpriteSheetArtist(this.spritesheet,
                                               this.izzyCellsRight),
-           [this.runBehavior, this.fallBehavior, this.jumpBehavior, this.collideBehavior ]); 
+           [this.runBehavior, this.jumpBehavior, this.collideBehavior, this.fallBehavior ]); 
 
        this.izzy.runAnimationRate = STARTING_RUN_ANIMATION_RATE;
 
@@ -1421,6 +1630,14 @@ SnailBait.prototype = {
       sprite.platform = platformSprite;
    },
 
+   putSpriteOnTrack: function(sprite, track){
+      var SPACE_BETWEEN_SPRITE_AND_TRACK = 2;
+
+      sprite.track = track;
+
+      sprite.top = this.calculatePlatformTop(sprite.track) - sprite.height - SPACE_BETWEEN_SPRITE_AND_TRACK;
+   },
+
    calculatePlatformTop: function (track) {
       if      (track === 1) { return this.TRACK_1_BASELINE; } // 323 pixels
       else if (track === 2) { return this.TRACK_2_BASELINE; } // 223 pixels
@@ -1475,6 +1692,76 @@ SnailBait.prototype = {
    
    downwardsFall: function (){
       this.izzy.artist.cells = this.izzyCellsLanding;
+   },
+
+   equipIzzyForJumping: function () {
+      var INITIAL_TRACK = 1,
+          IZZY_JUMP_HEIGHT = 120,
+          IZZY_JUMP_DURATION = 1000;
+
+      this.izzy.JUMP_HEIGHT   = IZZY_JUMP_HEIGHT;
+      this.izzy.JUMP_DURATION = IZZY_JUMP_DURATION;
+
+      this.izzy.jumping = false;
+      this.izzy.track   = INITIAL_TRACK;
+
+      this.izzy.ascendTimer =
+         new AnimationTimer(this.izzy.JUMP_DURATION/2,
+                            AnimationTimer.makeEaseOutEasingFunction(1.1));
+         
+      this.izzy.descendTimer =
+         new AnimationTimer(this.izzy.JUMP_DURATION/2,
+                            AnimationTimer.makeEaseInEasingFunction(1.1));
+
+      this.izzy.jump = function () {
+         if (this.jumping) // 'this' is Izzy
+            return;
+
+         this.jumping = true;
+         this.runAnimationRate = 0; // Freeze Izzy while jumping
+         this.verticalLaunchPosition = this.top;
+         this.ascendTimer.start(snailBait.timeSystem.calculateGameTime());
+      };
+
+      this.izzy.stopJumping = function () {
+         this.ascendTimer.stop(snailBait.timeSystem.calculateGameTime());
+         this.descendTimer.stop(snailBait.timeSystem.calculateGameTime());
+         this.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
+         this.jumping = false;
+      };
+
+/*       this.izzy.fall = function () {
+         // For now...
+         snailBait.izzy.track = 1;
+         snailBait.izzy.top = snailBait.calculatePlatformTop(snailBait.izzy.track) -
+                             snailBait.izzy.height;
+      }; */
+   },
+
+   equipIzzyForFalling: function () {
+      this.izzy.fallTimer = new AnimationTimer();
+      this.izzy.falling   = false;
+
+      this.izzy.fall = function (initialVelocity) {
+         this.falling = true;
+         this.velocityY = initialVelocity || 0;
+         this.initialVelocityY = initialVelocity || 0;
+         this.fallTimer.start(
+            snailBait.timeSystem.calculateGameTime());
+      };
+
+      this.izzy.stopFalling = function () {
+         this.falling = false;
+         this.velocityY = 0;
+         this.fallTimer.stop(
+            snailBait.timeSystem.calculateGameTime());
+      };
+   },
+
+   equipIzzy: function () {
+      this.equipIzzyForJumping();
+      this.equipIzzyForFalling();
+      this.izzy.direction = snailBait.LEFT;
    },
 
    fadeInElements: function () {
@@ -1700,7 +1987,7 @@ window.onkeydown = function (e) { //Defines key bindings
       snailBait.togglePaused();
     }
    else if (key === 74 || key === 32 || key === 87 || key === 38) { // 'j', spacebar, 'w', or up arrow to jump
-       snailBait.jumpBehavior.startJump(snailBait.izzy);
+       snailBait.izzy.jump(snailBait.izzy);
        snailBait.jumpSound.currentTime = 0;
        snailBait.jumpSound.play(); 
    }
@@ -1778,3 +2065,4 @@ var snailBait = new SnailBait();
 
 snailBait.initializeImages();
 snailBait.createSprites();
+
