@@ -152,7 +152,7 @@ var SnailBait = function () {
    this.FRUIT_CELLS_WIDTH  = 22;
 
    this.GEAR_CELLS_HEIGHT = 30; //Height of the gear sprite
-   this.GEAR_CELLS_WIDTH = 29; //Width of the gear sprite
+   this.GEAR_CELLS_WIDTH = 32; //Width of the gear sprite
 
    this.TAN_CRATE_CELLS_HEIGHT = 100;
    this.TAN_CRATE_CELLS_WIDTH = 100;
@@ -224,7 +224,7 @@ var SnailBait = function () {
    ];
 
    this.gearCells = [ //This is the location of the gear sprite on the sprite sheet
-      { left: 0,   top: 0, width: this.GEAR_CELLS_WIDTH,
+      { left: 32,   top: 0, width: this.GEAR_CELLS_WIDTH,
                              height: this.GEAR_CELLS_HEIGHT }
    ];
 
