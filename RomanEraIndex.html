@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+   <!-- Head.........................................................-->
+
+	<head>
+	   <title>Collectathon</title>
+      <link rel='stylesheet' href='collectathon.css'/>
+   </head>
+
+   <!-- Body.........................................................-->
+
+    <body>
+        <!-- Arena.....................................................-->
+
+        <div id='arena'>
+            <!-- Score and fps..........................................-->
+
+            <div id='score'>0</div>
+            <div id='fps'></div>
+            <div>Gears Collected:</div>
+            <div id='gear-counter'>0</div>
+
+            <!-- Toast..................................................-->
+
+            <div id='toast'></div>
+
+            <!-- Loading screen........................................-->
+
+            <div id='loading'>
+                <div id='loading-title'>Loading...</div>
+                <img id='loading-animated-gif' /> <!-- no src attribute -->
+            </div>
+
+            <!-- The game canvas........................................-->
+
+            <canvas id='game-canvas' width='800' height='400'>
+                Your browser does not support HTML5 Canvas.
+            </canvas>
+
+            <!-- Sound and music.....................................-->
+
+            <div id='sound-and-music'>
+                <div id='sound-checkbox-div' class='checkbox-div'>
+                    Sound <input id='sound-checkbox' type='checkbox' checked />
+                </div>
+
+                <div class='checkbox-div'>
+                    Music <input id='music-checkbox' type='checkbox' checked />
+                </div>
+            </div>
+
+            <!-- Instructions........................................-->
+
+            <div id='instructions'>
+                <div class='keys'>
+                    &larr; / a
+                    <div class='explanation'>move left</div>
+                    &rarr; / d
+                    <div class='explanation'>move right</div>
+                </div>
+
+                <div class='keys'>
+                    &uarr; / j / w / spacebar <div class='explanation'>jump</div>
+                </div>
+
+                <div class='keys'>
+                    p <div class='explanation'>pause</div>
+                </div>
+            </div>
+
+            <!-- Copyright...........................................-->
+
+            <div id='copyright'> &copy; 2025 Team Time Collection</div>
+        </div>
+
+        <!-- JavaScript................................................-->
+
+        <script src='js/requestNextAnimationFrame.js'></script> <!--Attaching this file allows the game to move-->
+        <script src='js/sprites.js'></script> <!--Attaching this file allows sprites to work-->
+        <script src='js/behaviors/cycle.js'></script> <!--This allows GIFs to work in the game-->
+        <script src='js/timeSystem.js'></script>
+        <script src='Jumping.js'></script> <!--Contains many functions needed for jumping-->
+        <script src='romanEra.js'></script> <!-- Roman Era script-->
+    </body>
+</html>

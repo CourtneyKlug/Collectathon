@@ -7,10 +7,13 @@ var SnailBait = function () {
 
    this.timeSystem = new TimeSystem(); // See js/timeSystem.js
 
-   this.timeRate = 1.0; // 1.0 is normal speed, 0.5 is 1/2 speed, etc.
-   
+   this.timeFactor = 1.0; // 1.0 is normal speed, 0.5 is 1/2 speed, etc.
    this.SHORT_DELAY = 50; // milliseconds
-   this.TIME_RATE_DURING_TRANSITIONS = 0.2; // percent
+   this.TIME_RATE_DURING_TRANSITIONS = 0.2;
+   this.NORMAL_TIME_RATE = 1.0;
+
+   this.IZZY_LEFT = 50,
+   this.STARTING_IZZY_TRACK = 1,
 
    // Constants.........................................................
 
@@ -88,6 +91,7 @@ var SnailBait = function () {
    this.jumpSound = new Audio('sounds/jump.mp3'),
    this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
    this.eggCollectSound = new Audio('sounds/egg_collect.wav'),
+   this.fallSound = new Audio('sounds/falling.wav'),
 
    // Time..............................................................
    
@@ -114,10 +118,17 @@ var SnailBait = function () {
    // Score.............................................................
 
    this.scoreElement = document.getElementById('score'),
+   this.gearElement = document.getElementById('gear-counter'),
+   this.gearCount = 0;
+   this.leafCount = 0;
 
    // Sound and music...................................................
 
    this.soundAndMusicElement = document.getElementById('sound-and-music');
+
+   // Runner track......................................................
+
+   this.runnerTrack = this.STARTING_RUNNER_TRACK,
    
    // Translation offsets...............................................
    
@@ -165,6 +176,15 @@ var SnailBait = function () {
 
    this.LEAF_CELLS_HEIGHT = 50;
    this.LEAF_CELLS_WIDTH = 60;
+
+   this.DOOR_CELLS_HEIGHT = 80;
+   this.DOOR_CELLS_WIDTH = 45;
+
+   this.OPENDOOR_CELLS_HEIGHT = 80;
+   this.OPENDOOR_CELLS_WIDTH = 45;
+
+   this.DEATHPIT_CELLS_HEIGHT = 80;
+   this.DEATHPIT_CELLS_WIDTH = 1200;
 
 
    // Sprite sheet cells................................................
@@ -313,6 +333,21 @@ var SnailBait = function () {
                            height: this.LEAF_CELLS_HEIGHT }
    ];
 
+   this.doorCells = [
+      { left: 1009, top: 5553, width: this.DOOR_CELLS_WIDTH,
+                           height: this.DOOR_CELLS_HEIGHT }
+   ];
+
+   this.opendoorCells = [
+      { left: 1085, top: 5553, width: this.OPENDOOR_CELLS_WIDTH,
+                           height: this.OPENDOOR_CELLS_HEIGHT }
+   ];
+
+   this.deathpitCells = [
+      { left: 2376, top: 5800, width: this.DEATHPIT_CELLS_WIDTH,
+                           height: this.DEATHPIT_CELLS_HEIGHT }
+   ];
+
    // Sprite data.......................................................
 
    this.egg1Data = [
@@ -404,7 +439,7 @@ this.platformData = [
       },
 
       {  left:      1230,
-         width:     525,
+         width:     325,
          height:    this.PLATFORM_HEIGHT,
          fillStyle: 'image2',
          opacity:   1.0,
@@ -650,6 +685,30 @@ this.platformData = [
          top: this.TRACK_1_BASELINE - 3.1*this.LEAF_CELLS_HEIGHT }, 
    ];
 
+   this.doorData = [
+      { left: 4560, 
+         top: this.TRACK_1_BASELINE - 0.9*this.DOOR_CELLS_HEIGHT }, 
+   ];
+
+   this.opendoorData = [
+      { left: 4560, 
+         top: this.TRACK_1_BASELINE - 0.9*this.OPENDOOR_CELLS_HEIGHT }, 
+   ];
+
+   this.deathpitData = [
+      { left: -550, 
+         top: this.TRACK_1_BASELINE - -0.8*this.DEATHPIT_CELLS_HEIGHT }, 
+
+         { left: 650, 
+            top: this.TRACK_1_BASELINE - -0.8*this.DEATHPIT_CELLS_HEIGHT }, 
+            { left: 1750, 
+               top: this.TRACK_1_BASELINE - -0.8*this.DEATHPIT_CELLS_HEIGHT }, 
+               { left: 2950, 
+                  top: this.TRACK_1_BASELINE - -0.8*this.DEATHPIT_CELLS_HEIGHT }, 
+                  { left: 4150, 
+                     top: this.TRACK_1_BASELINE - -0.8*this.DEATHPIT_CELLS_HEIGHT }, 
+   ];
+
    // Sprites...........................................................
   
    this.platforms    = [];
@@ -662,8 +721,12 @@ this.platformData = [
    this.egg3s        = [];
    this.egg4s        = [];
    this.egg5s        = [];
-   this.dinos        = [];
+   this.saddinos     = [];
+   this.happydinos     = [];
    this.leafs        = [];
+   this.doors = [];
+   this.opendoors = [];
+   this.deathpits = [];
 
    this.sprites = []; // For convenience, contains all of the sprites  
                       // from the preceding arrays
@@ -939,9 +1002,8 @@ this.platformData = [
                sprite.stopFalling();
 
                if (this.isOutOfPlay(sprite)) {
-                  //snailBait.loseLife();
                   //snailBait.playSound(snailBait.electricityFlowingSound);
-                  snailBait.runner.visible = false;
+                  snailBait.izzy.visible = false;
                }
             }
          }
@@ -994,13 +1056,23 @@ this.platformData = [
                 context.isPointInPath(r.right, r.bottom);
       },
 
-      processAssetCollision: function (sprite){ //This points to the other sprite, not Izzy -Abby
-/*          if (sprite.type == 'gear'){ //For testing purposes -Abby
-            console.log("Collected gear");
+      processAssetCollision: function (sprite){
+         if (sprite.type == 'gear'){
+            snailBait.gearCount++;
+            snailBait.gearCollectSound.currentTime = 0;
+            snailBait.gearCollectSound.play();
+            snailBait.updateGearElement();
+            console.log("Gears collected: " + snailBait.gearCount);
+   
+            if (snailBait.gearCount == 10){
+               console.log("All gears have been collected!");
+            }
          }
-         else{
-            console.log("Collected asset")
-         } */
+
+         if (sprite.type == 'leaf'){
+            snailBait.leafCount++;
+            console.log(snailBait.leafCount + " leaf has been collected.");
+         }
          
          sprite.visible = false; //Makes sprite disappear from view -Abby
          //Add code here to increase count of collected assets
@@ -1022,8 +1094,6 @@ this.platformData = [
 
       processCollision: function (sprite, otherSprite) {
          if ('gear' === otherSprite.type){
-               snailBait.gearCollectSound.currentTime = 0;
-               snailBait.gearCollectSound.play();
                this.processAssetCollision(otherSprite);
          }
 
@@ -1036,11 +1106,40 @@ this.platformData = [
                snailBait.eggCollectSound.play();
                this.processAssetCollision(otherSprite);
          }
-         else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby
-            
-            //console.log(sprite.type + " collided with " + otherSprite.type); //For testing purposes -Abby
-
+         else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby 
             this.processAssetCollision(otherSprite);
+         }
+
+         else if ('saddino' === otherSprite.type){ //Add cases here for each collectable - Abby
+            if (snailBait.leafCount == 1){
+               console.log("The dino has its leaf now! Hooray!");
+               snailBait.gearCount++;
+               snailBait.gearCollectSound.currentTime = 0;
+               snailBait.gearCollectSound.play();
+               snailBait.updateGearElement();
+               console.log("Gears collected: " + snailBait.gearCount);
+               this.processAssetCollision(otherSprite);
+            }
+   
+            else{
+               console.log("Please being a leaf to the dino!")
+            }
+         }
+
+         else if('door' === otherSprite.type && snailBait.gearCount == 10){
+            this.processAssetCollision(otherSprite);
+            console.log("I can enter this door now!")
+         }
+
+         else if('opendoor' === otherSprite.type && snailBait.gearCount == 10){
+            window.location.href = "RomanEraIndex.html";
+         }
+
+         else if('deathpit' === otherSprite.type){
+            snailBait.fallSound.currentTime = 0;
+            snailBait.fallSound.play();
+            sprite.visible = false;
+            snailBait.respawn();
          }
 
 /*          if('platform' === otherSprite.type){
@@ -1074,6 +1173,11 @@ this.platformData = [
 };
 
 SnailBait.prototype = {
+
+   updateGearElement: function () {
+      this.gearElement.innerHTML = this.gearCount;
+   },
+
    createSprites: function () {
       this.createPlatformSprites();
       this.createIzzySprite(); 
@@ -1086,8 +1190,12 @@ SnailBait.prototype = {
       this.createEgg3Sprite();
       this.createEgg4Sprite();
       this.createEgg5Sprite();
-      this.createDinoSprite();
+      this.createSadDinoSprite();
+      this.createHappyDinoSprite();
       this.createLeafSprite();
+      this.createDoorSprite();
+      this.createOpenDoorSprite();
+      this.createDeathpitSprites();
 
       this.initializeSprites();
 
@@ -1099,8 +1207,12 @@ SnailBait.prototype = {
    },
 
    addSpritesToSpriteArray: function () {
-      for (var i=0; i < this.dinos.length; ++i) {
-         this.sprites.push(this.dinos[i]);
+      for (var i=0; i < this.happydinos.length; ++i) {
+         this.sprites.push(this.happydinos[i]);
+      }
+
+      for (var i=0; i < this.saddinos.length; ++i) {
+         this.sprites.push(this.saddinos[i]);
       }
 
       for (var i=0; i < this.platforms.length; ++i) {
@@ -1148,6 +1260,18 @@ SnailBait.prototype = {
          this.sprites.push(this.leafs[i]);
       }
 
+      for (var i=0; i < this.opendoors.length; ++i) {
+         this.sprites.push(this.opendoors[i]);
+      }
+
+      for (var i=0; i < this.doors.length; ++i) {
+         this.sprites.push(this.doors[i]);
+      }
+
+      for (var i=0; i < this.deathpits.length; ++i) {
+         this.sprites.push(this.deathpits[i]);
+      }
+
       this.sprites.push(this.izzy);
    },
 
@@ -1169,10 +1293,10 @@ SnailBait.prototype = {
    },
 
    setTimeRate: function (rate) {
-      this.timeRate = rate;
+      this.timeFactor = rate;
 
-      this.timeSystem.setTransducer( function (now) {
-         return now * snailBait.timeRate;
+      this.timeSystem.setTransducer( function (percent) {
+         return percent * snailBait.timeFactor;
       });      
    },
    
@@ -1186,8 +1310,12 @@ SnailBait.prototype = {
       this.positionSprites(this.egg3s, this.egg3Data);
       this.positionSprites(this.egg4s, this.egg4Data);
       this.positionSprites(this.egg5s, this.egg5Data);
-      this.positionSprites(this.dinos, this.dinoData);
+      this.positionSprites(this.happydinos, this.dinoData);
+      this.positionSprites(this.saddinos, this.dinoData);
       this.positionSprites(this.leafs, this.leafData);
+      this.positionSprites(this.doors, this.doorData);
+      this.positionSprites(this.opendoors, this.opendoorData);
+      this.positionSprites(this.deathpits, this.deathpitData);
    },
 
    createMushroomSprites: function () {
@@ -1360,18 +1488,35 @@ SnailBait.prototype = {
       }
    },
 
-   createDinoSprite: function () {
-      var dino;
+   createSadDinoSprite: function () {
+      var dino, 
+      dinoArtist = new SpriteSheetArtist(this.spritesheet, 
+                               this.dinoSadCells);
 
       for (var i = 0; i < this.dinoData.length; ++i) {
-         dino = new Sprite('dino',
-                          new SpriteSheetArtist(this.spritesheet, 
-                                                this.dinoSadCells));
+         dino = new Sprite('saddino', 
+            dinoArtist);
 
          dino.width = this.DINO_CELLS_WIDTH; 
          dino.height = this.DINO_CELLS_HEIGHT;
 
-         this.dinos.push(dino);
+         this.saddinos.push(dino);
+      }
+   },
+
+   createHappyDinoSprite: function () {
+      var dino, 
+      dinoArtist = new SpriteSheetArtist(this.spritesheet, 
+                               this.dinoHappyCells);
+
+      for (var i = 0; i < this.dinoData.length; ++i) {
+         dino = new Sprite('happydino', 
+            dinoArtist);
+
+         dino.width = this.DINO_CELLS_WIDTH; 
+         dino.height = this.DINO_CELLS_HEIGHT;
+
+         this.happydinos.push(dino);
       }
    },
 
@@ -1396,6 +1541,54 @@ SnailBait.prototype = {
          //leaf.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.leafs.push(leaf);
+      }
+   },
+
+   createDoorSprite: function () {
+      var door;
+
+      for (var i = 0; i < this.doorData.length; ++i) {
+         door = new Sprite('door',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.doorCells));
+
+         door.width = this.DOOR_CELLS_WIDTH; 
+         door.height = this.DOOR_CELLS_HEIGHT;
+
+         this.doors.push(door);
+      }
+   },
+
+   createOpenDoorSprite: function () {
+      var opendoor;
+
+      for (var i = 0; i < this.opendoorData.length; ++i) {
+         opendoor = new Sprite('opendoor',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.opendoorCells));
+
+         opendoor.width = this.OPENDOOR_CELLS_WIDTH; 
+         opendoor.height = this.OPENDOOR_CELLS_HEIGHT;
+
+         this.opendoors.push(opendoor);
+      }
+   },
+
+   createDeathpitSprites: function () {
+      var deathpit;
+
+      for (var i = 0; i < this.deathpitData.length; ++i) {
+         deathpit = new Sprite('deathpit',
+                          new SpriteSheetArtist(this.spritesheet, 
+                                                this.deathpitCells));
+
+         deathpit.opacity = 0.5,
+         deathpit.width = this.DEATHPIT_CELLS_WIDTH; 
+         deathpit.height = this.DEATHPIT_CELLS_HEIGHT;
+
+         this.deathpits.push(deathpit);
+
+         //deathpit.showCollisionRectangle = true;
       }
    },
 
@@ -1626,7 +1819,7 @@ SnailBait.prototype = {
    },
 
    calculateFps: function (now) {
-      var fps = 1 / (now - this.lastAnimationFrameTime) * 1000 * this.timeRate;
+      var fps = 1 / (now - this.lastAnimationFrameTime) * 1000 * this.timeFactor;
 
       if (now - this.lastFpsUpdateTime > 1000) {
          this.lastFpsUpdateTime = now;
@@ -1876,7 +2069,6 @@ SnailBait.prototype = {
 
       setTimeout ( function () {
          snailBait.startGame();
-         snailBait.gameStarted = true;
       }, LOADING_SCREEN_TRANSITION_DURATION);
    },
 
@@ -1967,7 +2159,7 @@ SnailBait.prototype = {
 
       setTimeout( function () {
          snailBait.revealToast('Collide with gear pieces and bonus collectables. ' +
-           'Avoid bottomless pits.', 
+           'Avoid bottomless pits.' + ' Give the dino a leaf for a gear.', 
            INITIAL_TOAST_DURATION);
       }, INITIAL_TOAST_DELAY);
    },
@@ -1976,9 +2168,85 @@ SnailBait.prototype = {
       this.revealGame();
       this.revealInitialToast();
       this.timeSystem.start();
+      this.gameStarted = true;
 
       requestNextAnimationFrame(this.animate);
-   }
+   },
+
+   resetRunner: function () {
+      this.izzy.left      = snailBait.IZZY_LEFT;
+      this.izzy.track     = 3;
+      this.izzy.hOffset   = 0;
+      this.izzy.visible   = true;
+      this.izzy.jumping   = false;
+      this.izzy.top       = this.calculatePlatformTop(3) -
+                            this.izzy.height;
+
+      this.izzy.artist.cells     = this.izzyCellsRight;
+      this.izzy.artist.cellIndex = 0;
+   },
+
+   resetOffsets: function () {
+      this.bgVelocity       = 0;
+      this.backgroundOffset = 0;
+      this.platformOffset   = 0;
+      this.spriteOffset     = 0;
+   },
+
+   makeAllSpritesVisible: function () {
+      for (var i=0; i < this.sprites.length; ++i) {
+         this.sprites[i].visible = true; 
+      }
+   },
+
+   reset: function () {
+      this.resetOffsets();
+      this.resetRunner();
+      this.makeAllSpritesVisible();
+      this.canvas.style.opacity = 1.0;
+   },
+  
+   startLifeTransition: function (slowMotionDelay) {
+      var CANVAS_TRANSITION_OPACITY = 0.05,
+          SLOW_MOTION_RATE = 0.1;
+
+      this.canvas.style.opacity = CANVAS_TRANSITION_OPACITY;
+      this.playing = false;
+
+      setTimeout( function () {
+         snailBait.setTimeRate(SLOW_MOTION_RATE);
+         snailBait.izzy.visible = false;
+      }, slowMotionDelay);
+   },
+
+   endLifeTransition: function () {
+      var TIME_RESET_DELAY = 1000,
+          RUN_DELAY = 500;
+
+      snailBait.reset();
+
+      setTimeout( function () { // Reset the time
+         snailBait.setTimeRate(1.0);
+
+         setTimeout( function () { // Stop running
+            snailBait.izzy.runAnimationRate = 0;
+            snailBait.playing = true;
+         }, RUN_DELAY);
+      }, TIME_RESET_DELAY);
+   },
+
+   respawn: function () {
+      var TRANSITION_DURATION = 3000;
+      snailBait.gearCount = 0;
+      snailBait.leafCount = 0;
+      this.updateGearElement();
+
+      this.startLifeTransition(snailBait.RUNNER_EXPLOSION_DURATION);
+
+      setTimeout( function () { // After the explosion
+         snailBait.endLifeTransition();
+      }, TRANSITION_DURATION);
+   } 
 };
 
 // Event handlers.......................................................
