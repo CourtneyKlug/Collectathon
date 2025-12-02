@@ -89,9 +89,6 @@ var SnailBait = function () {
    // Sounds............................................................
 
    this.jumpSound = new Audio('sounds/jump.mp3'),
-   this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
-   this.eggCollectSound = new Audio('sounds/egg_collect.wav'),
-   this.fallSound = new Audio('sounds/falling.wav'),
 
    // Time..............................................................
    
@@ -1059,8 +1056,6 @@ this.platformData = [
       processAssetCollision: function (sprite){
          if (sprite.type == 'gear'){
             snailBait.gearCount++;
-            snailBait.gearCollectSound.currentTime = 0;
-            snailBait.gearCollectSound.play();
             snailBait.updateGearElement();
             console.log("Gears collected: " + snailBait.gearCount);
    
@@ -1102,8 +1097,6 @@ this.platformData = [
             'egg3' === otherSprite.type ||
             'egg4' === otherSprite.type ||
             'egg5' === otherSprite.type){
-               snailBait.eggCollectSound.currentTime = 0;
-               snailBait.eggCollectSound.play();
                this.processAssetCollision(otherSprite);
          }
          else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby 
@@ -1114,8 +1107,6 @@ this.platformData = [
             if (snailBait.leafCount == 1){
                console.log("The dino has its leaf now! Hooray!");
                snailBait.gearCount++;
-               snailBait.gearCollectSound.currentTime = 0;
-               snailBait.gearCollectSound.play();
                snailBait.updateGearElement();
                console.log("Gears collected: " + snailBait.gearCount);
                this.processAssetCollision(otherSprite);
@@ -1136,8 +1127,6 @@ this.platformData = [
          }
 
          else if('deathpit' === otherSprite.type){
-            snailBait.fallSound.currentTime = 0;
-            snailBait.fallSound.play();
             sprite.visible = false;
             snailBait.respawn();
          }
