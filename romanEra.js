@@ -1,7 +1,6 @@
 var SnailBait = function () {
    this.canvas = document.getElementById('game-canvas'),
    this.context = this.canvas.getContext('2d'),
-   this.fpsElement = document.getElementById('fps'),
 
    // Time..............................................................
 
@@ -96,10 +95,6 @@ var SnailBait = function () {
    this.lastFpsUpdateTime = 0,
    this.fps = 60,
 
-   // Fps...............................................................
-
-   this.fpsElement = document.getElementById('fps'),
-
    // Toast.............................................................
 
    this.toastElement = document.getElementById('toast'),
@@ -114,9 +109,12 @@ var SnailBait = function () {
 
    // Score.............................................................
 
-   this.scoreElement = document.getElementById('score'),
    this.gearElement = document.getElementById('gear-counter'),
+   this.gearLabelElement = document.getElementById('gear-counter-label'),
+   this.fruitElement = document.getElementById('fruit-counter'),
+   this.fruitLabelElement = document.getElementById('fruit-counter-label'),
    this.gearCount = 0;
+   this.fruitCount = 0;
 
    // Sound and music...................................................
 
@@ -1054,12 +1052,14 @@ this.platformData = [
       },
 
       processAssetCollision: function (sprite){ //This points to the other sprite, not Izzy -Abby
-/*          if (sprite.type == 'gear'){ //For testing purposes -Abby
-            console.log("Collected gear");
-         }
-         else{
-            console.log("Collected asset")
-         } */
+         if (sprite.type == 'banana'||
+            sprite.type == 'pear' ||
+            sprite.type == 'orange' ||
+            sprite.type == 'grape' ||
+            sprite.type == 'watermelon'){
+               snailBait.fruitCount++;
+               snailBait.updateGearElement();
+            }
          
          sprite.visible = false; //Makes sprite disappear from view -Abby
          //Add code here to increase count of collected assets
@@ -1069,10 +1069,6 @@ this.platformData = [
          snailBait.gearCount++;
          snailBait.updateGearElement();
          console.log("Gears collected: " + snailBait.gearCount);
-
-         if (snailBait.gearCount == 10){
-            console.log("All gears have been collected!");
-         }
       },
 
       proccessPlatformCollisionDuringJump: function (sprite, platform) {
@@ -1156,6 +1152,15 @@ SnailBait.prototype = {
 
    updateGearElement: function () {
       this.gearElement.innerHTML = this.gearCount;
+      this.fruitElement.innerHTML = this.fruitCount;
+
+      if(this.gearCount == 10){
+         this.gearElement.innerHTML = "All found!";
+      }
+
+      if(this.fruitCount == 5){
+         this.fruitElement.innerHTML = "All found!";
+      }
    },
 
    createSprites: function () {
@@ -1897,7 +1902,6 @@ SnailBait.prototype = {
 
       if (now - this.lastFpsUpdateTime > 1000) {
          this.lastFpsUpdateTime = now;
-         this.fpsElement.innerHTML = fps.toFixed(0) + ' fps';
       }
       return fps; 
    },
@@ -2192,20 +2196,7 @@ SnailBait.prototype = {
    },
 
    revealTopChrome: function () {
-      this.fadeInElements(this.fpsElement,
-       this.scoreElement);
-   },
-
-   revealTopChromeDimmed: function () {
-      var DIM = 0.25;
-
-      this.scoreElement.style.display = 'block';
-      this.fpsElement.style.display = 'block';
-
-      setTimeout( function () {
-         snailBait.scoreElement.style.opacity = DIM;
-         snailBait.fpsElement.style.opacity = DIM;
-      }, this.SHORT_DELAY);
+      this.fadeInElements(this.gearElement, this.gearLabelElement, this.fruitElement, this.fruitLabelElement);
    },
 
    revealBottomChrome: function () {
@@ -2215,9 +2206,8 @@ SnailBait.prototype = {
    },
 
    revealGame: function () {
-      var DIM_CONTROLS_DELAY = 5000;
+      var DIM_CONTROLS_DELAY = 8000;
 
-      this.revealTopChromeDimmed();
       this.revealCanvas();
       this.revealBottomChrome();
 
@@ -2229,7 +2219,7 @@ SnailBait.prototype = {
 
    revealInitialToast: function () {
       var INITIAL_TOAST_DELAY = 1500,
-      INITIAL_TOAST_DURATION = 3000;
+      INITIAL_TOAST_DURATION = 5000;
 
       setTimeout( function () {
          snailBait.revealToast('Collide with gear pieces and bonus collectables. ' +

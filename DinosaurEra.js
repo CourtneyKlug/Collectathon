@@ -1,7 +1,6 @@
 var SnailBait = function () {
    this.canvas = document.getElementById('game-canvas'),
    this.context = this.canvas.getContext('2d'),
-   this.fpsElement = document.getElementById('fps'),
 
    // Time..............................................................
 
@@ -96,10 +95,6 @@ var SnailBait = function () {
    this.lastFpsUpdateTime = 0,
    this.fps = 60,
 
-   // Fps...............................................................
-
-   this.fpsElement = document.getElementById('fps'),
-
    // Toast.............................................................
 
    this.toastElement = document.getElementById('toast'),
@@ -114,9 +109,12 @@ var SnailBait = function () {
 
    // Score.............................................................
 
-   this.scoreElement = document.getElementById('score'),
    this.gearElement = document.getElementById('gear-counter'),
+   this.gearLabelElement = document.getElementById('gear-counter-label'),
+   this.eggElement = document.getElementById('egg-counter'),
+   this.eggLabelElement = document.getElementById('egg-counter-label'),
    this.gearCount = 0;
+   this.eggCount = 0;
    this.leafCount = 0;
 
    // Sound and music...................................................
@@ -1020,7 +1018,6 @@ this.platformData = [
          if(otherSprite.type !== 'mushroom' && otherSprite.type !== 'bush'){ //Makes it so Izzy does not collide with mushrooms or bushes -Abby
          s = sprite.calculateCollisionRectangle(),
          o = otherSprite.calculateCollisionRectangle();
-         //console.log("Same column");
          
             return (o.left < s.right ||
                    o.right > s.left) &&
@@ -1057,17 +1054,20 @@ this.platformData = [
          if (sprite.type == 'gear'){
             snailBait.gearCount++;
             snailBait.updateGearElement();
-            console.log("Gears collected: " + snailBait.gearCount);
-   
-            if (snailBait.gearCount == 10){
-               console.log("All gears have been collected!");
-            }
          }
 
          if (sprite.type == 'leaf'){
             snailBait.leafCount++;
-            console.log(snailBait.leafCount + " leaf has been collected.");
          }
+
+         if (sprite.type == 'egg1'||
+            sprite.type == 'egg2' ||
+            sprite.type == 'egg3' ||
+            sprite.type == 'egg4' ||
+            sprite.type == 'egg5'){
+               snailBait.eggCount++;
+               snailBait.updateGearElement();
+            }
          
          sprite.visible = false; //Makes sprite disappear from view -Abby
          //Add code here to increase count of collected assets
@@ -1105,21 +1105,14 @@ this.platformData = [
 
          else if ('saddino' === otherSprite.type){ //Add cases here for each collectable - Abby
             if (snailBait.leafCount == 1){
-               console.log("The dino has its leaf now! Hooray!");
                snailBait.gearCount++;
-               snailBait.updateGearElement();
-               console.log("Gears collected: " + snailBait.gearCount);
+               snailBait.updateGearElement();;
                this.processAssetCollision(otherSprite);
-            }
-   
-            else{
-               console.log("Please being a leaf to the dino!")
             }
          }
 
          else if('door' === otherSprite.type && snailBait.gearCount == 10){
             this.processAssetCollision(otherSprite);
-            console.log("I can enter this door now!")
          }
 
          else if('opendoor' === otherSprite.type && snailBait.gearCount == 10){
@@ -1165,6 +1158,15 @@ SnailBait.prototype = {
 
    updateGearElement: function () {
       this.gearElement.innerHTML = this.gearCount;
+      this.eggElement.innerHTML = this.eggCount;
+
+      if(this.gearCount == 10){
+         this.gearElement.innerHTML = "All found!";
+      }
+
+      if(this.eggCount == 5){
+         this.eggElement.innerHTML = "All found!";
+      }
    },
 
    createSprites: function () {
@@ -1812,7 +1814,6 @@ SnailBait.prototype = {
 
       if (now - this.lastFpsUpdateTime > 1000) {
          this.lastFpsUpdateTime = now;
-         this.fpsElement.innerHTML = fps.toFixed(0) + ' fps';
       }
       return fps; 
    },
@@ -2107,20 +2108,7 @@ SnailBait.prototype = {
    },
 
    revealTopChrome: function () {
-      this.fadeInElements(this.fpsElement,
-       this.scoreElement);
-   },
-
-   revealTopChromeDimmed: function () {
-      var DIM = 0.25;
-
-      this.scoreElement.style.display = 'block';
-      this.fpsElement.style.display = 'block';
-
-      setTimeout( function () {
-         snailBait.scoreElement.style.opacity = DIM;
-         snailBait.fpsElement.style.opacity = DIM;
-      }, this.SHORT_DELAY);
+      this.fadeInElements(this.gearElement, this.gearLabelElement, this.eggElement, this.eggLabelElement);
    },
 
    revealBottomChrome: function () {
@@ -2130,9 +2118,8 @@ SnailBait.prototype = {
    },
 
    revealGame: function () {
-      var DIM_CONTROLS_DELAY = 5000;
+      var DIM_CONTROLS_DELAY = 8000;
 
-      this.revealTopChromeDimmed();
       this.revealCanvas();
       this.revealBottomChrome();
 
@@ -2144,7 +2131,7 @@ SnailBait.prototype = {
 
    revealInitialToast: function () {
       var INITIAL_TOAST_DELAY = 1500,
-      INITIAL_TOAST_DURATION = 3000;
+      INITIAL_TOAST_DURATION = 5000;
 
       setTimeout( function () {
          snailBait.revealToast('Collide with gear pieces and bonus collectables. ' +

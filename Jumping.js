@@ -323,7 +323,7 @@ PulseBehavior.prototype = {
 
 var JumpBehavior = function () {
     this.duration = 1000; // 1 second jump
-    this.height = 120;    // Jump height in pixels
+    this.height = 150;    // Jump height in pixels
     this.jumping = false;
     this.ascendTimer = new AnimationTimer(this.duration / 2);
     this.descendTimer = new AnimationTimer(this.duration / 2);
