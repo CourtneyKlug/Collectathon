@@ -1160,11 +1160,11 @@ SnailBait.prototype = {
       this.gearElement.innerHTML = this.gearCount;
       this.eggElement.innerHTML = this.eggCount;
 
-      if(this.gearCount == 10){
+      if(this.gearCount >= 10){
          this.gearElement.innerHTML = "All found!";
       }
 
-      if(this.eggCount == 5){
+      if(this.eggCount >= 5){
          this.eggElement.innerHTML = "All found!";
       }
    },
@@ -1626,9 +1626,9 @@ SnailBait.prototype = {
        this.izzy.height = IZZY_HEIGHT;
 
        this.izzy.collisionMargin = {
-           left: this.izzy.width/8 - 5,
+           left: this.izzy.width/8 - 8,
            top: IZZY_HEIGHT/4 - 5, 
-           right: this.izzy.width/8,
+           right: this.izzy.width/2 + 5,
            bottom: IZZY_HEIGHT/4 - 5,
        };
 
