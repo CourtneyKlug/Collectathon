@@ -214,20 +214,20 @@ var SnailBait = function () {
    ];
 
    this.izzyCellsRight = [
-      { left: 527, top: 5139,
-         width: 58, height: this.IZZY_CELLS_HEIGHT },
+      { left: 502, top: 5139,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
 
-      { left: 483, top: 5139,
-         width: 51, height: this.IZZY_CELLS_HEIGHT },
+      { left: 448, top: 5139,
+         width: 32, height: this.IZZY_CELLS_HEIGHT },
 
-      { left: 432, top: 5139,
-         width: 50, height: this.IZZY_CELLS_HEIGHT },
+      { left: 404, top: 5139,
+         width: 25, height: this.IZZY_CELLS_HEIGHT },
 
-      { left: 384, top: 5139,
-         width: 52, height: this.IZZY_CELLS_HEIGHT },
+      { left: 358, top: 5139,
+         width: 20, height: this.IZZY_CELLS_HEIGHT },
 
-      { left: 333, top: 5139,
-         width: 59, height: this.IZZY_CELLS_HEIGHT },
+      { left: 306, top: 5139,
+         width: 23, height: this.IZZY_CELLS_HEIGHT },
    ],
    
    this.izzyCellsLeft = [
