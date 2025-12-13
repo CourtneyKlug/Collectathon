@@ -88,6 +88,9 @@ var SnailBait = function () {
    // Sounds............................................................
 
    this.jumpSound = new Audio('sounds/jump.mp3'),
+   this.fallSound = new Audio('sounds/falling.wav'),
+   this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
+   this.eggCollectSound = new Audio('sounds/egg_collect.wav'),
 
    // Time..............................................................
    
@@ -1054,6 +1057,8 @@ this.platformData = [
          if (sprite.type == 'gear'){
             snailBait.gearCount++;
             snailBait.updateGearElement();
+            snailBait.gearCollectSound.currentTime = 0;
+            snailBait.gearCollectSound.play(); 
          }
 
          if (sprite.type == 'leaf'){
@@ -1097,6 +1102,8 @@ this.platformData = [
             'egg3' === otherSprite.type ||
             'egg4' === otherSprite.type ||
             'egg5' === otherSprite.type){
+               snailBait.eggCollectSound.currentTime = 0;
+               snailBait.eggCollectSound.play(); 
                this.processAssetCollision(otherSprite);
          }
          else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby 
@@ -1121,6 +1128,8 @@ this.platformData = [
 
          else if('deathpit' === otherSprite.type){
             sprite.visible = false;
+            snailBait.fallSound.currentTime = 0;
+            snailBait.fallSound.play(); 
             snailBait.respawn();
          }
 
