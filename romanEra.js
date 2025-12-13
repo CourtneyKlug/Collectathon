@@ -115,9 +115,6 @@ var SnailBait = function () {
    this.gearCount = 0;
    this.fruitCount = 0;
 
-   // Sound and music...................................................
-
-   this.soundAndMusicElement = document.getElementById('sound-and-music');
 
    // Runner track......................................................
 
@@ -2072,7 +2069,6 @@ SnailBait.prototype = {
       FINAL_OPACITY = 0.5;
 
       snailBait.instructionsElement.style.opacity = FINAL_OPACITY;
-      snailBait.soundAndMusicElement.style.opacity = FINAL_OPACITY;
    },
 
    revealCanvas: function () {
@@ -2084,7 +2080,7 @@ SnailBait.prototype = {
    },
 
    revealBottomChrome: function () {
-      this.fadeInElements(this.soundAndMusicElement,
+      this.fadeInElements(
        this.instructionsElement,
        this.copyrightElement);
    },

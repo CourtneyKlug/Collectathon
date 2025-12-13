@@ -87,6 +87,7 @@ var SnailBait = function () {
    this.fallSound = new Audio('sounds/falling.wav'),
    this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
    this.eggCollectSound = new Audio('sounds/egg_collect.wav'),
+   this.music = new Audio('sounds/dinosaur_theme.mp3')
 
    // Time..............................................................
    
@@ -115,10 +116,6 @@ var SnailBait = function () {
    this.gearCount = 0;
    this.eggCount = 0;
    this.leafCount = 0;
-
-   // Sound and music...................................................
-
-   this.soundAndMusicElement = document.getElementById('sound-and-music');
 
    // Runner track......................................................
 
@@ -773,7 +770,7 @@ this.platformData = [
                             (now - lastAnimationFrameTime) / 1000;
 
          if (sprite.direction === snailBait.RIGHT) {
-            sprite.left += pixelsToMove;
+            sprite.left += pixelsToMove;jump
          }
          else {
             sprite.left -= pixelsToMove;
@@ -1769,6 +1766,7 @@ SnailBait.prototype = {
       this.bgVelocity = -this.BACKGROUND_VELOCITY;
       this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE = 10;
       this.izzy.artist.cells = this.izzyCellsLeft;
+
    },
 
    turnRight: function () { //Allows movement to Right
@@ -1988,7 +1986,6 @@ SnailBait.prototype = {
       FINAL_OPACITY = 0.5;
 
       snailBait.instructionsElement.style.opacity = FINAL_OPACITY;
-      snailBait.soundAndMusicElement.style.opacity = FINAL_OPACITY;
    },
 
    revealCanvas: function () {
@@ -2000,7 +1997,7 @@ SnailBait.prototype = {
    },
 
    revealBottomChrome: function () {
-      this.fadeInElements(this.soundAndMusicElement,
+      this.fadeInElements(
        this.instructionsElement,
        this.copyrightElement);
    },
