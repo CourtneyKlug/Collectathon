@@ -45,10 +45,6 @@ var SnailBait = function () {
    this.PIXELS_PER_METER = this.canvas.width / 
                            this.CANVAS_WIDTH_IN_METERS;
 
-   // Velocities........................................................
-
-   this.GEAR_PACE_VELOCITY = 80; //May be used to make gears bobble. Doesn't work yet -Abby
-
    // Loading screen....................................................
 
    this.loadingElement = document.getElementById('loading');
@@ -132,9 +128,6 @@ var SnailBait = function () {
    
    this.backgroundOffset = this.STARTING_BACKGROUND_OFFSET,
    this.spriteOffset = this.STARTING_SPRITE_OFFSET;
-   //this.jumpBehavior = new JumpBehavior();
-   
-   //this.platformOffset = this.STARTING_PLATFORM_OFFSET,
 
    // Velocities........................................................
 
@@ -151,8 +144,8 @@ var SnailBait = function () {
    this.EGG_CELLS_WIDTH  = 22;
    this.EGG3_CELLS_WIDTH = 35;
 
-   this.GEAR_CELLS_HEIGHT = 30; //Height of the gear sprite
-   this.GEAR_CELLS_WIDTH = 29; //Width of the gear sprite
+   this.GEAR_CELLS_HEIGHT = 30;
+   this.GEAR_CELLS_WIDTH = 29;
 
    this.MUSHROOM_CELLS_HEIGHT = 40;
    this.MUSHROOM_CELLS_WIDTH = 50;
@@ -211,7 +204,7 @@ var SnailBait = function () {
                               height: this.EGG5_CELLS_HEIGHT }
    ];
 
-   this.gearCells = [ //This is the location of the gear sprite on the sprite sheet
+   this.gearCells = [
       { left: 0,   top: 0, width: this.GEAR_CELLS_WIDTH,
                              height: this.GEAR_CELLS_HEIGHT }
    ];
@@ -265,40 +258,6 @@ var SnailBait = function () {
 
       { left: 149, top: 5051,
          width: 20, height: this.IZZY_CELLS_HEIGHT },
-   ],
-
-   this.izzyCellsJump = [
-      { left: 5, top: 5098,
-         width: 26, height: this.IZZY_CELLS_HEIGHT },
-      
-         { left: 5, top: 5098,
-            width: 26, height: this.IZZY_CELLS_HEIGHT },
-
-            { left: 5, top: 5098,
-               width: 26, height: this.IZZY_CELLS_HEIGHT },
-
-               { left: 5, top: 5098,
-                  width: 26, height: this.IZZY_CELLS_HEIGHT },
-
-                  { left: 5, top: 5098,
-                     width: 26, height: this.IZZY_CELLS_HEIGHT },
-   ],
-
-   this.izzyCellsLanding = [
-      { left: 146, top: 5098,
-         width: 32, height: this.IZZY_CELLS_HEIGHT },
-
-         { left: 146, top: 5098,
-            width: 32, height: this.IZZY_CELLS_HEIGHT },
-
-            { left: 146, top: 5098,
-               width: 32, height: this.IZZY_CELLS_HEIGHT },
-
-               { left: 146, top: 5098,
-                  width: 32, height: this.IZZY_CELLS_HEIGHT },
-
-                  { left: 146, top: 5098,
-                     width: 32, height: this.IZZY_CELLS_HEIGHT },
    ],
 
    this.mushroomCells = [
@@ -553,9 +512,9 @@ this.platformData = [
       },
    ];
 
-   this.gearData = [ //These are the locations of the gears on the game map
+   this.gearData = [
       { left: 296,  
-         top: this.TRACK_1_BASELINE - 7.7*this.GEAR_CELLS_HEIGHT }, //Could manipulating the "top" property over time create a bouncing effect? -Abby
+         top: this.TRACK_1_BASELINE - 7.7*this.GEAR_CELLS_HEIGHT },
 
       { left: 880,  
          top: this.TRACK_2_BASELINE - 1.5*this.GEAR_CELLS_HEIGHT },
@@ -710,7 +669,7 @@ this.platformData = [
    // Sprites...........................................................
   
    this.platforms    = [];
-   this.gears        = []; //This creates the array that contains the gears
+   this.gears        = [];
    this.mushrooms    = [];
    this.bushes       = [];
    this.trees        = [];
@@ -791,7 +750,7 @@ this.platformData = [
 
    // Pacing on platforms...............................................
 
-   this.paceBehavior = { //Can be used to make objects bobble? Currently breaks anything it is attached to -Abby
+   this.paceBehavior = {
       setDirection: function (sprite) {
          var sRight = sprite.left + sprite.width,
              pRight = sprite.platform.left + sprite.platform.width;
@@ -827,17 +786,6 @@ this.platformData = [
          this.setPosition(sprite, now, lastAnimationFrameTime);
       }
    };
-
-   /* this.fallBehavior = {         
-      execute: function (sprite, now, fps, context, lastAnimationFrameTime) {
-         if ( ! sprite.falling) {
-			 sprite.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
-            if (! snailBait.platformUnderneath(sprite)) {
-               sprite.runAnimationRate = 0;
-            }
-         }
-      }
-   }; */
 
       // Jump..............................................................
 
@@ -964,7 +912,6 @@ this.platformData = [
       fallOnPlatform: function (sprite) {
          sprite.stopFalling();
          snailBait.putSpriteOnTrack(sprite, sprite.track);
-         //snailBait.playSound(snailBait.thudSound);
       },
 
       moveDown: function (sprite, now, lastAnimationFrameTime) {
@@ -1000,7 +947,6 @@ this.platformData = [
                sprite.stopFalling();
 
                if (this.isOutOfPlay(sprite)) {
-                  //snailBait.playSound(snailBait.electricityFlowingSound);
                   snailBait.izzy.visible = false;
                }
             }
@@ -1034,15 +980,8 @@ this.platformData = [
          var o = otherSprite.calculateCollisionRectangle(),
              r = sprite.calculateCollisionRectangle();
 
-         // Determine if any of Izzy's four corners or its
-         // center lie within the other sprite's bounding box.
-
          context.beginPath();
          context.rect(o.left, o.top, o.right - o.left, o.bottom - o.top);
-
-/*           if(otherSprite.type == 'platform'){ //For use while checking collisions. Comment this out when done testing -Abby
-            console.log("Detected " + otherSprite.type);
-         } */
          
          return context.isPointInPath(r.left,  r.top)       ||
                 context.isPointInPath(r.right, r.top)       ||
@@ -1081,7 +1020,6 @@ this.platformData = [
       proccessPlatformCollisionDuringJump: function (sprite, platform) {
          var isDescending = sprite.descendTimer.isRunning();
          
-         //console.log("Platform hit while jumping");
          sprite.stopJumping();
 
          if(isDescending){
@@ -1106,14 +1044,16 @@ this.platformData = [
                snailBait.eggCollectSound.play(); 
                this.processAssetCollision(otherSprite);
          }
-         else if ('leaf' === otherSprite.type){ //Add cases here for each collectable - Abby 
+         else if ('leaf' === otherSprite.type){
             this.processAssetCollision(otherSprite);
          }
 
-         else if ('saddino' === otherSprite.type){ //Add cases here for each collectable - Abby
+         else if ('saddino' === otherSprite.type){
             if (snailBait.leafCount == 1){
                snailBait.gearCount++;
-               snailBait.updateGearElement();;
+               snailBait.updateGearElement();
+               snailBait.gearCollectSound.currentTime = 0;
+               snailBait.gearCollectSound.play(); 
                this.processAssetCollision(otherSprite);
             }
          }
@@ -1133,10 +1073,6 @@ this.platformData = [
             snailBait.respawn();
          }
 
-/*          if('platform' === otherSprite.type){
-            console.log("Colliding with " + otherSprite.type);
-         } */
-
          if(sprite.jumping && 'platform' === otherSprite.type){ //Checks if Izzy hits a platform while jumping
             this.proccessPlatformCollisionDuringJump(sprite, otherSprite);
          }
@@ -1148,10 +1084,6 @@ this.platformData = [
 
          for (var i=0; i < snailBait.sprites.length; ++i) {
             otherSprite = snailBait.sprites[i];
-
-/*              if (this.didCollide(sprite, otherSprite, context)) { 
-                  this.processCollision(sprite, otherSprite);
-               } */
 
               if (this.isCandidateForCollision(sprite, otherSprite)) {
                if (this.didCollide(sprite, otherSprite, context)) { 
@@ -1181,7 +1113,7 @@ SnailBait.prototype = {
    createSprites: function () {
       this.createPlatformSprites();
       this.createIzzySprite(); 
-      this.createGearSprites(); //Creates gears
+      this.createGearSprites();
       this.createMushroomSprites();
       this.createBushSprites();
       this.createTreeSprites();
@@ -1219,7 +1151,7 @@ SnailBait.prototype = {
          this.sprites.push(this.platforms[i]);
       }
 
-      for (var i=0; i < this.gears.length; ++i) { //This adds the gear sprites to the master list of sprites
+      for (var i=0; i < this.gears.length; ++i) {
          this.sprites.push(this.gears[i]);
       }
 
@@ -1301,7 +1233,7 @@ SnailBait.prototype = {
    },
    
    initializeSprites: function() {
-      this.positionSprites(this.gears, this.gearData); //This spawns the gear sprites in the right spots
+      this.positionSprites(this.gears, this.gearData);
       this.positionSprites(this.mushrooms,    this.mushroomData);
       this.positionSprites(this.bushes,    this.bushData);
       this.positionSprites(this.trees, this.treeData);
@@ -1382,8 +1314,6 @@ SnailBait.prototype = {
            bottom: egg1.height/4,
          };
 
-         //egg1.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
-
          this.egg1s.push(egg1);
       }
    },
@@ -1406,8 +1336,6 @@ SnailBait.prototype = {
            right: egg2.width/8 - 2,
            bottom: egg2.height/4,
          };
-
-        //egg2.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
         this.egg2s.push(egg2);
       }
@@ -1432,8 +1360,6 @@ SnailBait.prototype = {
            bottom: egg3.height/4,
          };
 
-        //egg3.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
-
         this.egg3s.push(egg3);
       }
    },
@@ -1457,8 +1383,6 @@ SnailBait.prototype = {
            bottom: egg4.height/4,
          };
 
-         //egg4.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
-
          this.egg4s.push(egg4);
       }
    },
@@ -1481,8 +1405,6 @@ SnailBait.prototype = {
            right: egg5.width/8 - 2,
            bottom: egg5.height/4 - 12,
          };
-
-         //egg5.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.egg5s.push(egg5);
       }
@@ -1538,8 +1460,6 @@ SnailBait.prototype = {
            bottom: leaf.height/4 - 17,
          };
 
-         //leaf.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
-
          this.leafs.push(leaf);
       }
    },
@@ -1587,8 +1507,6 @@ SnailBait.prototype = {
          deathpit.height = this.DEATHPIT_CELLS_HEIGHT;
 
          this.deathpits.push(deathpit);
-
-         //deathpit.showCollisionRectangle = true;
       }
    },
 
@@ -1641,25 +1559,20 @@ SnailBait.prototype = {
            bottom: IZZY_HEIGHT/4 - 5,
        };
 
-       //this.izzy.showCollisionRectangle = true; //Makes collision rectangle visible. -Abby
-
        this.sprites.push(this.izzy);
    },
 
-   createGearSprites: function () { //This is the function that creates a gear and adds it to the array
+   createGearSprites: function () {
       var gear,
           gearArtist = new SpriteSheetArtist(this.spritesheet,
                                                  this.gearCells);
    
-      for (var i = 0; i < this.gearData.length; ++i) { //This generates the gears and fills the empty array
+      for (var i = 0; i < this.gearData.length; ++i) {
          gear = new Sprite('gear', 
                                gearArtist);
 
-         //gear.behaviors = [ this.paceBehavior ]; //Trying to make gears bobble Does not yet work, but may need this later -Abby
-
          gear.width = this.GEAR_CELLS_WIDTH;
          gear.height = this.GEAR_CELLS_HEIGHT;
-         //gear.velocityX = this.GEAR_PACE_VELOCITY; //Bobble velocity. Doesn't work yet -Abby
          gear.value = 100; //I think this was the point value in Snail Bait. This could be used to instead increase the gear count.
 
          gear.collisionMargin = {
@@ -1668,8 +1581,6 @@ SnailBait.prototype = {
            right: gear.width,
            bottom: gear.height/4,
          };
-
-         //gear.showCollisionRectangle = true; //Makes collision rectangle visible -Abby
 
          this.gears.push(gear);
       }
@@ -1725,7 +1636,6 @@ SnailBait.prototype = {
    setOffsets: function (now) {
       this.setBackgroundOffset(now);
       this.setSpriteOffsets(now);
-      //this.setPlatformOffset(now);
    },
 
    setBackgroundOffset: function (now) {
@@ -1753,22 +1663,6 @@ SnailBait.prototype = {
          }
       }
    },
-
-   /*
-
-   setPlatformOffset: function (now) {
-      this.platformOffset += 
-      this.platformVelocity * (now - this.lastAnimationFrameTime) / 1000;
-
-      if (this.platformOffset > 2*this.BACKGROUND_WIDTH) {
-         this.turnLeft();
-      }
-      else if (this.platformOffset < 0) {
-         this.turnRight();
-      }
-   },
-
-   */
 
    drawBackground: function () {
       var BACKGROUND_TOP_IN_SPRITESHEET = 590;
@@ -1889,14 +1783,6 @@ SnailBait.prototype = {
       this.izzy.runAnimationRate = this.RUN_ANIMATION_RATE = 5;
    },
 
-   upwardsLeap: function (){ //Upwards Movement
-      this.izzy.artist.cells = this.izzyCellsJump;
-   },
-   
-   downwardsFall: function (){
-      this.izzy.artist.cells = this.izzyCellsLanding;
-   },
-
    equipIzzyForJumping: function () {
       var INITIAL_TRACK = 1,
           IZZY_JUMP_HEIGHT = 120,
@@ -1932,13 +1818,6 @@ SnailBait.prototype = {
          this.runAnimationRate = snailBait.RUN_ANIMATION_RATE;
          this.jumping = false;
       };
-
-/*       this.izzy.fall = function () {
-         // For now...
-         snailBait.izzy.track = 1;
-         snailBait.izzy.top = snailBait.calculatePlatformTop(snailBait.izzy.track) -
-                             snailBait.izzy.height;
-      }; */
    },
 
    equipIzzyForFalling: function () {
@@ -2223,6 +2102,7 @@ SnailBait.prototype = {
    respawn: function () {
       var TRANSITION_DURATION = 3000;
       snailBait.gearCount = 0;
+      snailBait.eggCount = 0;
       snailBait.leafCount = 0;
       this.updateGearElement();
 
