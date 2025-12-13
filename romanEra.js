@@ -88,6 +88,9 @@ var SnailBait = function () {
    // Sounds............................................................
 
    this.jumpSound = new Audio('sounds/jump.mp3'),
+   this.fallSound = new Audio('sounds/falling.wav'),
+   this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
+   this.fruitCollectSound = new Audio('sounds/fruit_collect.wav'),
 
    // Time..............................................................
    
@@ -1058,6 +1061,8 @@ this.platformData = [
             sprite.type == 'grape' ||
             sprite.type == 'watermelon'){
                snailBait.fruitCount++;
+               snailBait.fruitCollectSound.currentTime = 0;
+               snailBait.fruitCollectSound.play(); 
                snailBait.updateGearElement();
             }
          
@@ -1089,6 +1094,8 @@ this.platformData = [
          if ('gear' === otherSprite.type){
                this.processAssetCollision(otherSprite);
                this.gearCollection();
+               snailBait.gearCollectSound.currentTime = 0;
+               snailBait.gearCollectSound.play(); 
          }
 
          else if('banana' === otherSprite.type || 
@@ -1115,6 +1122,8 @@ this.platformData = [
 
          else if('deathpit' === otherSprite.type){
             sprite.visible = false;
+            snailBait.fallSound.currentTime = 0;
+            snailBait.fallSound.play(); 
             snailBait.respawn();
          }
 
