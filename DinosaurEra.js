@@ -1803,7 +1803,8 @@ SnailBait.prototype = {
       this.izzy.jump = function () {
          if (this.jumping) // 'this' is Izzy
             return;
-
+         snailBait.jumpSound.currentTime = 0;
+         snailBait.jumpSound.play(); 
          this.jumping = true;
          this.runAnimationRate = 0; // Freeze Izzy while jumping
          this.verticalLaunchPosition = this.top;
@@ -2129,8 +2130,7 @@ window.onkeydown = function (e) { //Defines key bindings
     }
    else if (key === 74 || key === 32 || key === 87 || key === 38) { // 'j', spacebar, 'w', or up arrow to jump
        snailBait.izzy.jump(snailBait.izzy);
-       snailBait.jumpSound.currentTime = 0;
-       snailBait.jumpSound.play(); 
+       
    }
 
    else if (key === 69) { // 'e' to slow down time
