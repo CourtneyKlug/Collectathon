@@ -87,6 +87,7 @@ var SnailBait = function () {
    this.fallSound = new Audio('sounds/falling.wav'),
    this.gearCollectSound = new Audio('sounds/gear_collect.mp3'),
    this.fruitCollectSound = new Audio('sounds/fruit_collect.wav'),
+   this.music = new Audio('sounds/roman_theme.mp3'),
 
    // Time..............................................................
    
@@ -2030,6 +2031,8 @@ SnailBait.prototype = {
 
       setTimeout ( function () {
          snailBait.startGame();
+         snailBait.music.currentTime = 0;
+         snailBait.music.play();
       }, LOADING_SCREEN_TRANSITION_DURATION);
    },
 
@@ -2042,7 +2045,7 @@ SnailBait.prototype = {
 
    initializeImages: function () {
       this.spritesheet.src = 'images/itt_spritesheet_full.png';
-      this.loadingAnimatedGIFElement.src = 'images/snail.gif';
+      this.loadingAnimatedGIFElement.src = 'images/loading-computer.gif';
 
       this.spritesheet.onload = function (e) {
          snailBait.backgroundLoaded();
@@ -2197,6 +2200,8 @@ SnailBait.prototype = {
    endscreen: function () {
       this.startLifeTransition();
       this.revealEndToast();
+      snailBait.music.currentTime = 0;
+      snailBait.music.pause();
    },
 
    revealEndToast: function () {

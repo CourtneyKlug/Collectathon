@@ -108,7 +108,7 @@ body {
 }
 
 #copyright {
-   float: right;
+   float: left;
    margin-right: -14px;
    margin-top: -2.3em;
    padding: 2px;
